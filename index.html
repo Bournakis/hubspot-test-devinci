@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HubSpot Exam - Devinci Full Text</title>
+    <title>HubSpot Certification - Devinci</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
     <style>
         :root { 
@@ -20,30 +20,41 @@
                 --border-color: #4f6f8f; --btn-opt-bg: #3d4f61;
             }
         }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
-        .header-tools { width: 100%; max-width: 800px; display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 10px; }
-        .theme-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
-        .container { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; max-width: 800px; text-align: center; box-sizing: border-box; }
-        h1 { color: var(--hs-orange); font-size: 1.5rem; margin-top: 0; }
-        h2 { font-size: 1.3rem; line-height: 1.5; margin-bottom: 25px; color: var(--text-color); text-align: left; }
-        .form-group { text-align: left; margin-bottom: 12px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
-        input, select { padding: 14px; width: 100%; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; background: var(--card-bg); color: var(--text-color); box-sizing: border-box; }
-        button.primary { background: var(--hs-orange); color: white; border: none; padding: 16px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem; width: 100%; margin: 10px 0; }
-        #timer { font-size: 2.5rem; color: #ff4444; font-weight: bold; margin-bottom: 10px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
+        
+        .header-tools { width: 100%; max-width: 800px; display: flex; justify-content: flex-end; margin-bottom: 15px; }
+        .theme-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        .container { background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); width: 100%; max-width: 700px; text-align: center; box-sizing: border-box; }
+        
+        h1 { color: var(--hs-orange); font-size: 1.8rem; margin-bottom: 25px; }
+        h2 { font-size: 1.4rem; line-height: 1.5; margin-bottom: 30px; color: var(--text-color); text-align: left; }
+
+        .form-group { text-align: left; margin-bottom: 18px; }
+        label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; color: var(--text-color); }
+        input { padding: 14px; width: 100%; border: 2px solid var(--border-color); border-radius: 10px; font-size: 1rem; background: var(--card-bg); color: var(--text-color); box-sizing: border-box; transition: border-color 0.2s; }
+        input:focus { border-color: var(--hs-orange); outline: none; }
+        
+        button.primary { background: var(--hs-orange); color: white; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.2rem; width: 100%; margin: 15px 0; transition: transform 0.1s; }
+        button.primary:active { transform: scale(0.98); }
+        
+        #timer { font-size: 2.8rem; color: #ff4444; font-weight: 800; margin-bottom: 15px; letter-spacing: -1px; }
+        
         .option-btn { 
             display: block; width: 100%; text-align: left; 
             background: var(--btn-opt-bg); border: 2px solid var(--border-color); 
-            color: var(--text-color) !important; margin-bottom: 15px; padding: 22px; 
-            border-radius: 10px; cursor: pointer; font-size: 1.3rem; 
-            line-height: 1.4; word-wrap: break-word;
+            color: var(--text-color) !important; margin-bottom: 15px; padding: 20px; 
+            border-radius: 12px; cursor: pointer; font-size: 1.25rem; 
+            line-height: 1.4; transition: all 0.2s;
         }
-        .option-btn:hover { border-color: var(--hs-orange); background: var(--card-bg); }
+        .option-btn:hover { border-color: var(--hs-orange); background: var(--card-bg); transform: translateY(-2px); }
+
         .hidden { display: none !important; }
-        .admin-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px; }
-        .admin-table th, .admin-table td { border: 1px solid var(--border-color); padding: 10px; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 12px; width: 95%; max-width: 600px; max-height: 85vh; overflow-y: auto; text-align: left; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 20px; }
+        .admin-table th, .admin-table td { border: 1px solid var(--border-color); padding: 12px; text-align: left; }
+        
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
     </style>
 </head>
 <body id="body-tag">
@@ -55,46 +66,69 @@
 <div class="container">
     <div id="login-screen">
         <h1 id="tr-title">Portail Certification HubSpot</h1>
-        <div class="form-group"><label id="tr-label-class">Classe</label><input type="text" id="class-id"></div>
-        <div class="form-group"><label id="tr-label-fname">Prénom</label><input type="text" id="fname"></div>
-        <div class="form-group"><label id="tr-label-lname">Nom</label><input type="text" id="lname"></div>
-        <div class="form-group"><label id="tr-label-email">Email @edu.devinci.fr</label><input type="email" id="email"></div>
-        <div class="form-group"><label id="tr-label-pw">Mot de passe</label><input type="password" id="quiz-pw-input"></div>
+        
+        <div class="form-group">
+            <label id="tr-label-class">Classe</label>
+            <input type="text" id="class-id" placeholder="A3-MKT">
+        </div>
+        
+        <div class="form-group">
+            <label id="tr-label-fname">Prénom</label>
+            <input type="text" id="fname" placeholder="Votre prénom">
+        </div>
+        
+        <div class="form-group">
+            <label id="tr-label-lname">Nom</label>
+            <input type="text" id="lname" placeholder="Votre nom">
+        </div>
+        
+        <div class="form-group">
+            <label id="tr-label-email">Email @edu.devinci.fr</label>
+            <input type="email" id="email" placeholder="nom.prenom@edu.devinci.fr">
+        </div>
+        
+        <div class="form-group">
+            <label id="tr-label-pw">Mot de passe de l'examen</label>
+            <input type="password" id="quiz-pw-input" placeholder="Code exam">
+        </div>
+        
         <button class="primary" onclick="checkAccess()" id="tr-btn-start">DÉMARRER</button>
-        <p onclick="showAdmin()" style="margin-top:20px; font-size:0.8rem; opacity:0.6; cursor:pointer;">Admin Login</p>
+        <p onclick="showAdmin()" style="margin-top:20px; font-size:0.85rem; opacity:0.7; cursor:pointer; text-decoration: underline;">Admin Access</p>
     </div>
 
     <div id="quiz-screen" class="hidden">
         <div id="timer">60s</div>
-        <div style="font-weight: bold; margin-bottom: 10px;"><span id="tr-q-label">Question</span> <span id="q-current">1</span> / 60</div>
+        <div style="font-weight: bold; margin-bottom: 10px; font-size: 1.1rem;">
+            <span id="tr-q-label">Question</span> <span id="q-current">1</span> / 60
+        </div>
         <h2 id="question-text"></h2>
         <div id="options-container"></div>
     </div>
 
     <div id="result-screen" class="hidden">
         <h1 id="tr-end-title">Terminé</h1>
-        <div id="final-score-display" style="font-size: 3.5rem; margin: 20px 0; color: var(--hs-orange);"></div>
-        <p id="tr-end-msg">Résultats enregistrés.</p>
+        <div id="final-score-display" style="font-size: 4rem; margin: 25px 0; color: var(--hs-orange); font-weight: 800;"></div>
+        <p id="tr-end-msg" style="font-size: 1.2rem;"></p>
         <button class="primary" id="tr-btn-back" onclick="location.reload()">Retour</button>
     </div>
 
     <div id="admin-screen" class="hidden">
-        <h2>Dashboard Admin</h2>
+        <h2 style="text-align: center;">Dashboard Administrateur</h2>
         <div id="admin-auth">
-            <input type="password" id="admin-pw" placeholder="Code Secret">
-            <button class="primary" onclick="loginAdmin()">Entrer</button>
+            <input type="password" id="admin-pw" placeholder="Code Secret Admin" style="margin-bottom: 10px;">
+            <button class="primary" onclick="loginAdmin()">Accéder aux scores</button>
         </div>
         <div id="admin-content" class="hidden">
             <div class="form-group">
-                <label>🌍 Langue / Language</label>
-                <select id="lang-selector" onchange="changeLang(this.value)">
+                <label>🌍 Langue du portail / Portal Language</label>
+                <select id="lang-selector" onchange="changeLang(this.value)" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--border-color); background: var(--card-bg); color: var(--text-color);">
                     <option value="fr">Français</option>
                     <option value="en">English</option>
                 </select>
             </div>
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button onclick="exportToExcel()" style="flex:1; background:#27ae60; color:white; border:none; padding:12px; border-radius:8px;">Excel</button>
-                <button onclick="deleteSelection()" style="flex:1; background:#e74c3c; color:white; border:none; padding:12px; border-radius:8px;">Supprimer</button>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <button onclick="exportToExcel()" style="flex:1; background:#27ae60; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">Export Excel</button>
+                <button onclick="deleteSelection()" style="flex:1; background:#e74c3c; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">Supprimer</button>
             </div>
             <div style="overflow-x:auto;">
                 <table class="admin-table">
@@ -102,7 +136,7 @@
                     <tbody id="log-body"></tbody>
                 </table>
             </div>
-            <button onclick="location.reload()" style="background:gray; color:white; border:none; padding:12px; width:100%; margin-top:15px; border-radius:8px;">Quitter Admin</button>
+            <button onclick="location.reload()" style="background:#33475b; color:white; border:none; padding:12px; width:100%; margin-top:20px; border-radius:8px; cursor:pointer;">Quitter l'Admin</button>
         </div>
     </div>
 </div>
@@ -118,17 +152,18 @@ const DOMAIN = "@edu.devinci.fr";
 
 const translations = {
     fr: { 
-        title: "Portail Certification HubSpot", labelClass: "Classe", labelFname: "Prénom", labelLname: "Nom", labelEmail: "Email @edu.devinci.fr", labelPw: "Mot de passe", 
-        btnStart: "DÉMARRER L'EXAMEN", qLabel: "Question", endTitle: "Examen Terminé", endMsg: "Vos résultats sont enregistrés.", 
-        timeOver: "TEMPS ÉCOULÉ", btnBack: "Retour", phClass: "ex: A3-MKT", phFname: "Votre prénom", phLname: "Votre nom", phEmail: "mail@edu.devinci.fr", phPw: "Code fourni"
+        title: "Portail Certification HubSpot", labelClass: "Classe", labelFname: "Prénom", labelLname: "Nom", labelEmail: "Email @edu.devinci.fr", labelPw: "Mot de passe de l'examen", 
+        btnStart: "DÉMARRER L'EXAMEN", qLabel: "Question", endTitle: "Examen Terminé", endMsg: "Vos résultats ont été enregistrés avec succès.", 
+        timeOver: "TEMPS ÉCOULÉ", btnBack: "Retour à l'accueil", phClass: "ex: A3-MKT", phFname: "Votre prénom", phLname: "Votre nom", phEmail: "prenom.nom@edu.devinci.fr", phPw: "Code fourni par l'intervenant"
     },
     en: { 
-        title: "HubSpot Certification Portal", labelClass: "Class", labelFname: "First Name", labelLname: "Last Name", labelEmail: "Email @edu.devinci.fr", labelPw: "Password", 
-        btnStart: "START FINAL EXAM", qLabel: "Question", endTitle: "Exam Completed", endMsg: "Your results have been saved.", 
-        timeOver: "TIME EXPIRED", btnBack: "Back", phClass: "e.g., A3-MKT", phFname: "First name", phLname: "Last name", phEmail: "mail@edu.devinci.fr", phPw: "Exam code"
+        title: "HubSpot Certification Portal", labelClass: "Class", labelFname: "First Name", labelLname: "Last Name", labelEmail: "Email @edu.devinci.fr", labelPw: "Exam Password", 
+        btnStart: "START FINAL EXAM", qLabel: "Question", endTitle: "Exam Completed", endMsg: "Your results have been successfully saved.", 
+        timeOver: "TIME EXPIRED", btnBack: "Back to Home", phClass: "e.g., A3-MKT", phFname: "First name", phLname: "Last name", phEmail: "first.last@edu.devinci.fr", phPw: "Exam code provided"
     }
 };
 
+// --- BASE DE QUESTIONS (COMPLÈTE) ---
 const questionsData = [
     { q: "What is the buyer's journey?", options: ["The process a customer goes through after they've purchased a product", "The process a customer goes through as they learn about your brand", "The active research process a someone goes through leading up to a purchase", "The inbound methodology from a customer's perspective"], correct: 3 },
     { q: "If you're creating content focused on solutions to your buyer persona's problem, where does that content fit into the buyer's journey?", options: ["Awareness", "Consideration", "Decision", "All of the above"], correct: 2 },
@@ -194,6 +229,7 @@ const questionsData = [
 
 let stu = {}, examSet = [], currIdx = 0, score = 0, timerInt, dLog = [], curLang = localStorage.getItem('siteLang')||'fr';
 
+// --- THEME ---
 function toggleTheme() {
     const b = document.getElementById('body-tag');
     const txt = document.getElementById('theme-text');
@@ -206,9 +242,9 @@ function toggleTheme() {
     }
 }
 
+// --- LANGUE ---
 function applyLang() {
     const t = translations[curLang];
-    // Textes fixes
     document.getElementById('tr-title').innerText = t.title;
     document.getElementById('tr-label-class').innerText = t.labelClass;
     document.getElementById('tr-label-fname').innerText = t.labelFname;
@@ -221,7 +257,6 @@ function applyLang() {
     document.getElementById('tr-end-msg').innerText = t.endMsg;
     document.getElementById('tr-btn-back').innerText = t.btnBack;
 
-    // Placeholders
     document.getElementById('class-id').placeholder = t.phClass;
     document.getElementById('fname').placeholder = t.phFname;
     document.getElementById('lname').placeholder = t.phLname;
@@ -231,20 +266,23 @@ function applyLang() {
 
 function changeLang(l) { curLang = l; localStorage.setItem('siteLang', l); applyLang(); }
 
+// --- LOGIQUE QUIZ ---
 function checkAccess() {
     const cls = document.getElementById('class-id').value.trim().toUpperCase();
     const fn = document.getElementById('fname').value.trim();
     const ln = document.getElementById('lname').value.trim();
     const mail = document.getElementById('email').value.trim().toLowerCase();
     const pw = document.getElementById('quiz-pw-input').value;
-    if(!cls || !fn || !ln || !mail || pw !== QUIZ_PW) return alert(curLang === 'fr' ? "Saisie invalide ou mot de passe incorrect." : "Invalid input or wrong password.");
-    if(!mail.endsWith(DOMAIN)) return alert(curLang === 'fr' ? "Email @edu.devinci.fr requis." : "@edu.devinci.fr email required.");
-    if(localStorage.getItem('done_'+mail)) return alert(curLang === 'fr' ? "Déjà soumis." : "Already submitted.");
+    
+    if(!cls || !fn || !ln || !mail || pw !== QUIZ_PW) return alert(curLang==='fr'?"Champs incomplets ou code erroné.":"Incomplete fields or wrong code.");
+    if(!mail.endsWith(DOMAIN)) return alert(curLang==='fr'?"Email Devinci requis.":"Devinci email required.");
+    if(localStorage.getItem('done_'+mail)) return alert(curLang==='fr'?"Déjà fait.":"Already submitted.");
+    
     stu = { class: cls, fname: fn, lname: ln, email: mail };
-    start();
+    startQuiz();
 }
 
-function start() {
+function startQuiz() {
     examSet = JSON.parse(JSON.stringify(questionsData));
     examSet.forEach(q => { q.correctTxt = q.options[q.correct-1]; q.options.sort(() => Math.random() - 0.5); });
     examSet.sort(() => Math.random() - 0.5);
@@ -254,32 +292,40 @@ function start() {
 }
 
 function showQuestion() {
-    if(currIdx >= examSet.length) return end();
+    if(currIdx >= examSet.length) return endQuiz();
     let t = 60; document.getElementById('timer').innerText = t+"s";
     clearInterval(timerInt);
     timerInt = setInterval(() => {
         t--; document.getElementById('timer').innerText = t+"s";
-        if(t <= 0) validate(translations[curLang].timeOver);
+        if(t <= 0) validateAnswer("TIMEOUT");
     }, 1000);
+
     const q = examSet[currIdx];
     document.getElementById('q-current').innerText = currIdx + 1;
     document.getElementById('question-text').innerText = q.q;
-    const box = document.getElementById('options-container'); box.innerHTML = '';
+    const box = document.getElementById('options-container'); 
+    box.innerHTML = '';
+    
     q.options.forEach(o => {
-        const b = document.createElement('button'); b.className = 'option-btn';
-        b.innerText = o; b.onclick = () => validate(o); box.appendChild(b);
+        const b = document.createElement('button');
+        b.className = 'option-btn';
+        b.innerText = o;
+        b.onclick = () => validateAnswer(o);
+        box.appendChild(b);
     });
 }
 
-function validate(ans) {
+function validateAnswer(ans) {
     clearInterval(timerInt);
-    const q = examSet[currIdx]; const win = (ans === q.correctTxt);
+    const q = examSet[currIdx];
+    const win = (ans === q.correctTxt);
     if(win) score++;
     dLog.push({ q: q.q, stu: ans, correct: q.correctTxt, stat: win ? '✅' : '❌' });
-    currIdx++; showQuestion();
+    currIdx++;
+    showQuestion();
 }
 
-function end() {
+function endQuiz() {
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
     logs.push({ ...stu, score, details: dLog, date: new Date().toLocaleString() });
     localStorage.setItem('examLogs', JSON.stringify(logs));
@@ -289,29 +335,31 @@ function end() {
     document.getElementById('final-score-display').innerText = score + " / 60";
 }
 
+// --- ADMIN ---
 function showAdmin() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('admin-screen').classList.remove('hidden'); }
 function loginAdmin() { if(document.getElementById('admin-pw').value === ADMIN_CODE) { document.getElementById('admin-auth').classList.add('hidden'); document.getElementById('admin-content').classList.remove('hidden'); refreshTable(); } }
 function refreshTable() {
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
     logs.sort((a,b) => a.class.localeCompare(b.class) || a.lname.localeCompare(b.lname));
-    document.getElementById('log-body').innerHTML = logs.map((l, i) => `<tr><td><input type="checkbox" class="log-cb" data-idx="${i}"></td><td>${l.class}</td><td onclick="view(${i})" style="color:var(--hs-orange); cursor:pointer;">${l.lname.toUpperCase()}</td><td>${l.score}/60</td></tr>`).join('');
+    document.getElementById('log-body').innerHTML = logs.map((l, i) => `<tr><td><input type="checkbox" class="log-cb" data-idx="${i}"></td><td>${l.class}</td><td onclick="viewDetail(${i})" style="color:var(--hs-orange); cursor:pointer; font-weight:bold;">${l.lname.toUpperCase()}</td><td>${l.score}/60</td></tr>`).join('');
 }
-function view(i) {
+function viewDetail(i) {
     const l = JSON.parse(localStorage.getItem('examLogs'))[i];
-    document.getElementById('modal-title').innerText = l.fname + " " + l.lname;
-    document.getElementById('modal-body').innerHTML = l.details.map(d => `<div style="margin-bottom:10px; border-bottom:1px solid #eee; font-size:0.8rem"><b>${d.q}</b><br>Rép: ${d.stu} ${d.stat}</div>`).join('');
+    document.getElementById('modal-title').innerText = l.fname + " " + l.lname + " - " + l.score + "/60";
+    document.getElementById('modal-body').innerHTML = l.details.map(d => `<div style="margin-bottom:12px; border-bottom:1px solid #ddd; padding-bottom:5px; font-size:0.85rem"><b>Q: ${d.q}</b><br>Rép: ${d.stu} ${d.stat}<br><span style="color:green">Corect: ${d.correct}</span></div>`).join('');
     document.getElementById('detail-modal').classList.remove('hidden');
 }
 function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
 function toggleSelectAll() { document.querySelectorAll('.log-cb').forEach(c => c.checked = document.getElementById('select-all').checked); }
-function deleteSelection() { if(confirm("Supprimer ?")) { let l = JSON.parse(localStorage.getItem('examLogs') || '[]'); Array.from(document.querySelectorAll('.log-cb:checked')).map(c => parseInt(c.dataset.idx)).sort((a,b)=>b-a).forEach(i => l.splice(i,1)); localStorage.setItem('examLogs', JSON.stringify(l)); refreshTable(); } }
+function deleteSelection() { if(confirm("Supprimer la sélection ?")) { let l = JSON.parse(localStorage.getItem('examLogs') || '[]'); Array.from(document.querySelectorAll('.log-cb:checked')).map(c => parseInt(c.dataset.idx)).sort((a,b)=>b-a).forEach(i => l.splice(i,1)); localStorage.setItem('examLogs', JSON.stringify(l)); refreshTable(); } }
 function exportToExcel() {
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    const data = Array.from(document.querySelectorAll('.log-cb:checked')).map(c => { const log = logs[parseInt(c.dataset.idx)]; return { Classe: log.class, Nom: log.lname, Prénom: log.fname, Score: log.score }; });
+    const data = Array.from(document.querySelectorAll('.log-cb:checked')).map(c => { const log = logs[parseInt(c.dataset.idx)]; return { Classe: log.class, Nom: log.lname, Prénom: log.fname, Score: log.score, Date: log.date }; });
     if(!data.length) return alert("Sélectionnez des lignes.");
     const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Scores"); XLSX.writeFile(wb, "Scores_HubSpot.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Résultats"); XLSX.writeFile(wb, "HubSpot_Results.xlsx");
 }
+
 window.onload = applyLang;
 </script>
 </body>
