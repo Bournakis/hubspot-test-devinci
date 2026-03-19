@@ -55,11 +55,11 @@
 <div class="container">
     <div id="login-screen">
         <h1 id="tr-title">Portail Certification HubSpot</h1>
-        <div class="form-group"><label id="tr-label-class">Classe</label><input type="text" id="class-id" placeholder="ex: A3-MKT"></div>
+        <div class="form-group"><label id="tr-label-class">Classe</label><input type="text" id="class-id"></div>
         <div class="form-group"><label id="tr-label-fname">Prénom</label><input type="text" id="fname"></div>
         <div class="form-group"><label id="tr-label-lname">Nom</label><input type="text" id="lname"></div>
         <div class="form-group"><label id="tr-label-email">Email @edu.devinci.fr</label><input type="email" id="email"></div>
-        <div class="form-group"><label id="tr-label-pw">Mot de passe de l'examen</label><input type="password" id="quiz-pw-input"></div>
+        <div class="form-group"><label id="tr-label-pw">Mot de passe</label><input type="password" id="quiz-pw-input"></div>
         <button class="primary" onclick="checkAccess()" id="tr-btn-start">DÉMARRER</button>
         <p onclick="showAdmin()" style="margin-top:20px; font-size:0.8rem; opacity:0.6; cursor:pointer;">Admin Login</p>
     </div>
@@ -75,7 +75,7 @@
         <h1 id="tr-end-title">Terminé</h1>
         <div id="final-score-display" style="font-size: 3.5rem; margin: 20px 0; color: var(--hs-orange);"></div>
         <p id="tr-end-msg">Résultats enregistrés.</p>
-        <button class="primary" onclick="location.reload()">Retour</button>
+        <button class="primary" id="tr-btn-back" onclick="location.reload()">Retour</button>
     </div>
 
     <div id="admin-screen" class="hidden">
@@ -117,8 +117,16 @@ const QUIZ_PW = "hubspot30";
 const DOMAIN = "@edu.devinci.fr";
 
 const translations = {
-    fr: { title: "Portail Certification HubSpot", labelClass: "Classe", labelFname: "Prénom", labelLname: "Nom", labelEmail: "Email @edu.devinci.fr", labelPw: "Mot de passe", btnStart: "DÉMARRER L'EXAMEN", qLabel: "Question", endTitle: "Examen Terminé", endMsg: "Vos résultats sont enregistrés.", timeOver: "TEMPS ÉCOULÉ" },
-    en: { title: "Hubspot Certification Portal", labelClass: "Class", labelFname: "First Name", labelLname: "Last Name", labelEmail: "Email @edu.devinci.fr", labelPw: "Password", btnStart: "START FINAL EXAM", qLabel: "Question", endTitle: "Exam Completed", endMsg: "Your results have been saved.", timeOver: "TIME EXPIRED" }
+    fr: { 
+        title: "Portail Certification HubSpot", labelClass: "Classe", labelFname: "Prénom", labelLname: "Nom", labelEmail: "Email @edu.devinci.fr", labelPw: "Mot de passe", 
+        btnStart: "DÉMARRER L'EXAMEN", qLabel: "Question", endTitle: "Examen Terminé", endMsg: "Vos résultats sont enregistrés.", 
+        timeOver: "TEMPS ÉCOULÉ", btnBack: "Retour", phClass: "ex: A3-MKT", phFname: "Votre prénom", phLname: "Votre nom", phEmail: "mail@edu.devinci.fr", phPw: "Code fourni"
+    },
+    en: { 
+        title: "HubSpot Certification Portal", labelClass: "Class", labelFname: "First Name", labelLname: "Last Name", labelEmail: "Email @edu.devinci.fr", labelPw: "Password", 
+        btnStart: "START FINAL EXAM", qLabel: "Question", endTitle: "Exam Completed", endMsg: "Your results have been saved.", 
+        timeOver: "TIME EXPIRED", btnBack: "Back", phClass: "e.g., A3-MKT", phFname: "First name", phLname: "Last name", phEmail: "mail@edu.devinci.fr", phPw: "Exam code"
+    }
 };
 
 const questionsData = [
@@ -200,6 +208,7 @@ function toggleTheme() {
 
 function applyLang() {
     const t = translations[curLang];
+    // Textes fixes
     document.getElementById('tr-title').innerText = t.title;
     document.getElementById('tr-label-class').innerText = t.labelClass;
     document.getElementById('tr-label-fname').innerText = t.labelFname;
@@ -210,6 +219,14 @@ function applyLang() {
     document.getElementById('tr-q-label').innerText = t.qLabel;
     document.getElementById('tr-end-title').innerText = t.endTitle;
     document.getElementById('tr-end-msg').innerText = t.endMsg;
+    document.getElementById('tr-btn-back').innerText = t.btnBack;
+
+    // Placeholders
+    document.getElementById('class-id').placeholder = t.phClass;
+    document.getElementById('fname').placeholder = t.phFname;
+    document.getElementById('lname').placeholder = t.phLname;
+    document.getElementById('email').placeholder = t.phEmail;
+    document.getElementById('quiz-pw-input').placeholder = t.phPw;
 }
 
 function changeLang(l) { curLang = l; localStorage.setItem('siteLang', l); applyLang(); }
@@ -220,9 +237,9 @@ function checkAccess() {
     const ln = document.getElementById('lname').value.trim();
     const mail = document.getElementById('email').value.trim().toLowerCase();
     const pw = document.getElementById('quiz-pw-input').value;
-    if(!cls || !fn || !ln || !mail || pw !== QUIZ_PW) return alert("Saisie invalide.");
-    if(!mail.endsWith(DOMAIN)) return alert("Email @edu.devinci.fr requis.");
-    if(localStorage.getItem('done_'+mail)) return alert("Déjà soumis.");
+    if(!cls || !fn || !ln || !mail || pw !== QUIZ_PW) return alert(curLang === 'fr' ? "Saisie invalide ou mot de passe incorrect." : "Invalid input or wrong password.");
+    if(!mail.endsWith(DOMAIN)) return alert(curLang === 'fr' ? "Email @edu.devinci.fr requis." : "@edu.devinci.fr email required.");
+    if(localStorage.getItem('done_'+mail)) return alert(curLang === 'fr' ? "Déjà soumis." : "Already submitted.");
     stu = { class: cls, fname: fn, lname: ln, email: mail };
     start();
 }
@@ -295,267 +312,6 @@ function exportToExcel() {
     const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Scores"); XLSX.writeFile(wb, "Scores_HubSpot.xlsx");
 }
-window.onload = applyLang;
-</script>
-</body>
-</html>
-<div class="container">
-    <div id="login-screen">
-        <h1 id="tr-title">Certification HubSpot</h1>
-        <div class="form-group"><label id="tr-label-class">Classe</label><input type="text" id="class-id" placeholder="ex: A3-MKT"></div>
-        <div class="form-group"><label id="tr-label-fname">Prénom</label><input type="text" id="fname"></div>
-        <div class="form-group"><label id="tr-label-lname">Nom</label><input type="text" id="lname"></div>
-        <div class="form-group"><label id="tr-label-email">Email @edu.devinci.fr</label><input type="email" id="email"></div>
-        <div class="form-group"><label id="tr-label-pw">Password</label><input type="password" id="quiz-pw-input"></div>
-        <button class="primary" onclick="checkAccess()" id="tr-btn-start">DÉMARRER</button>
-        <p onclick="showAdmin()" style="margin-top:15px; font-size:0.75rem; opacity:0.6; cursor:pointer;">Admin Login</p>
-    </div>
-
-    <div id="quiz-screen" class="hidden">
-        <div id="timer">60s</div>
-        <div style="font-weight: bold; margin-bottom: 5px;"><span id="tr-q-label">Question</span> <span id="q-current">1</span> / 60</div>
-        <h2 id="question-text"></h2>
-        <div id="options-container"></div>
-    </div>
-
-    <div id="result-screen" class="hidden">
-        <h1 id="tr-end-title">Terminé</h1>
-        <div id="final-score-display" style="font-size: 3rem; margin: 20px 0; color: var(--hs-orange);"></div>
-        <p id="tr-end-msg">Enregistré.</p>
-        <button class="primary" onclick="location.reload()">Back</button>
-    </div>
-
-    <div id="admin-screen" class="hidden">
-        <h2>Admin Panel</h2>
-        <div id="admin-auth">
-            <input type="password" id="admin-pw" placeholder="Code Admin">
-            <button class="primary" onclick="loginAdmin()">Entrer</button>
-        </div>
-        <div id="admin-content" class="hidden">
-            <div class="form-group" style="border:1px solid var(--border-color); padding:10px; border-radius:8px;">
-                <label>🌍 Site Language</label>
-                <select id="lang-selector" onchange="changeLang(this.value)">
-                    <option value="fr">Français</option>
-                    <option value="en">English</option>
-                </select>
-            </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin: 10px 0;">
-                <button onclick="exportToExcel()" style="background:#27ae60; color:white; border:none; padding:10px; border-radius:5px;">Excel</button>
-                <button onclick="deleteSelection()" style="background:#e74c3c; color:white; border:none; padding:10px; border-radius:5px;">Suppr.</button>
-            </div>
-            <div class="admin-table-container">
-                <table class="admin-table">
-                    <thead><tr><th><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th><th>Cls</th><th>Nom</th><th>Score</th></tr></thead>
-                    <tbody id="log-body"></tbody>
-                </table>
-            </div>
-            <button onclick="location.reload()" style="background:gray; color:white; border:none; padding:10px; width:100%; margin-top:10px; border-radius:5px;">Exit Admin</button>
-        </div>
-    </div>
-</div>
-
-<div id="detail-modal" class="modal hidden">
-    <div class="modal-content"><h3 id="modal-title"></h3><div id="modal-body"></div><button onclick="closeModal()" class="primary">Close</button></div>
-</div>
-
-<script>
-const ADMIN_CODE = "supermatou";
-const QUIZ_PW = "hubspot30";
-const DOMAIN = "@edu.devinci.fr";
-
-const translations = {
-    fr: { title: "Portail Certification HubSpot", labelClass: "Classe", labelFname: "Prénom", labelLname: "Nom", labelEmail: "Email @edu.devinci.fr", labelPw: "Mot de passe", btnStart: "DÉMARRER L'EXAMEN", qLabel: "Question", endTitle: "Examen Terminé", endMsg: "Résultats enregistrés.", timeOver: "TEMPS ÉCOULÉ" },
-    en: { title: "HubSpot Certification Portal", labelClass: "Class", labelFname: "First Name", labelLname: "Last Name", labelEmail: "Email @edu.devinci.fr", labelPw: "Password", btnStart: "START EXAM", qLabel: "Question", endTitle: "Exam Completed", endMsg: "Results saved.", timeOver: "TIME EXPIRED" }
-};
-
-// --- DATA ---
-const questionsData = [
-    { q: "What is the buyer's journey?", options: ["Process after purchase", "Learning about brand", "Active research process leading to purchase", "Inbound methodology perspective"], correct: 3 },
-    { q: "Focused on solutions to buyer persona's problem, where does content fit?", options: ["Awareness", "Consideration", "Decision", "All of the above"], correct: 2 },
-    { q: "Which departments should be involved in creating content?", options: ["All departments", "Just marketing", "Just marketing and sales", "All customer-facing departments"], correct: 1 },
-    { q: "True or false? Most buyers research before meeting a salesperson.", options: ["True", "False"], correct: 1 },
-    { q: "True or false? A customer's buying journey is ever-evolving.", options: ["True", "False"], correct: 1 },
-    { q: "Your __________ is your strongest acquisition lever.", options: ["content library", "current customer base", "inbound tool stack", "sales-qualified leads"], correct: 2 },
-    { q: "What does CRM stand for?", options: ["Custom Rendering", "Relationship Modules", "Customer Relationship Management", "Rotation Model"], correct: 3 },
-    { q: "What are the stages in the inbound methodology?", options: ["Get Found, Convert", "Attract, Engage, Close", "Attract, Engage, Delight", "Attract, Convert, Close"], correct: 3 },
-    { q: "True or false? Attracting is marketing, Engaging is sales, Delighting is services.", options: ["True", "False"], correct: 2 },
-    { q: "When does the engage stage begin?", options: ["Purchase occurs", "Customer leaves", "Prospect/customer takes a desired action", "Discount proposal"], correct: 3 },
-    { q: "Purpose of the delight stage?", options: ["Exceed expectations", "Outstanding experience", "Ensure goal accomplishment", "All of the above"], correct: 4 },
-    { q: "True or false? As buying behavior changes, inbound philosophy evolves.", options: ["True", "False"], correct: 1 },
-    { q: "Who is responsible for delighting prospects and customers?", options: ["Services", "Marketing/Services", "Sales/Services", "Marketing, Sales, and Services"], correct: 4 },
-    { q: "The inbound methodology is a circle. What does it represent?", options: ["funnel", "obelisk", "flywheel", "cyclone"], correct: 3 },
-    { q: "True or false? Best practice to gate content over live chat.", options: ["True", "False"], correct: 2 },
-    { q: "Which is NOT true about a flywheel?", options: ["Store momentum", "Circular process", "Stand unsupported indefinitely", "Accelerate with energy"], correct: 3 },
-    { q: "True or false? Every customer must have a fantastic experience to accelerate flywheel.", options: ["True - Even 1 bad experience scares others", "True - Flawless is mandatory", "False - Flywheel counteracts via total base size", "False - Flywheel encourages best experience possible"], correct: 4 },
-    { q: "How to apply flywheel thinking to budget?", options: ["Invest in happiness as much as acquisition", "Even distribution", "No marketing budget", "Funding discounts"], correct: 1 },
-    { q: "Most important source of new prospects in a flywheel?", options: ["Marketing", "Sales", "Advertisements", "Word-of-mouth"], correct: 4 },
-    { q: "Relationship of funnels and flywheels?", options: ["Replaces", "Same premise", "Individual funnels interconnected in flywheel", "First step"], correct: 3 },
-    { q: "How does flywheel foster collaboration?", options: ["Understand how separate funnels fit together", "Impossible to apply", "Funnels cause friction", "Replaces org chart"], correct: 1 },
-    { q: "Relationship between inbound and flywheel?", options: ["Arrows show direction", "Inbound is round to visualize flywheel", "Only way to operate", "Inbound is a funnel in flywheel"], correct: 2 },
-    { q: "True or false? Every business exists primarily to create profits.", options: ["True - Focus first", "True - For employees", "False - Profits are a result, not purpose", "False - Only for charity"], correct: 3 },
-    { q: "Best way to align employees around a purpose?", options: ["Focus on profits", "Using Jobs Theory", "High bonuses", "Competitive environment"], correct: 2 },
-    { q: "Which is NOT a key part of culture?", options: ["Shared values", "Mission statement", "Office floor plan", "Beliefs"], correct: 3 },
-    { q: "What is Jobs Theory?", options: ["HR management", "Framework for customer needs", "Hiring method", "Task automation"], correct: 2 },
-    { q: "Jobs Theory timeline starts where?", options: ["Purchase", "First thought of need", "Talking to sales", "After use"], correct: 2 },
-    { q: "Example of a job story?", options: ["Product is best", "When hungry, I want a snack...", "Buy 1 get 1", "30-year-old male"], correct: 2 },
-    { q: "Which is NOT a 'job dimension'?", options: ["Functional", "Emotional", "Social", "Geographic"], correct: 4 },
-    { q: "How does purpose affect 'back office' teams?", options: ["No effect", "Helps prioritize tasks", "Only for sales", "Reduces workload"], correct: 2 },
-    { q: "What describes a buyer persona?", options: ["Individual prospect", "Semi-fictional representation", "Demographic list", "Sentiment analysis"], correct: 2 },
-    { q: "Who benefits most from personas?", options: ["Marketing only", "Sales only", "All customer-facing teams", "Leadership only"], correct: 3 },
-    { q: "Who should be involved in creating personas?", options: ["Marketing", "Services", "Leadership", "Anybody interacting with customers"], correct: 4 },
-    { q: "Role of 'back office' in personas?", options: ["Not involved", "Offer key insights", "Own process", "Accept finished"], correct: 2 },
-    { q: "True or false? One person should maintain personas.", options: ["True - Accountability", "True - Avoid inconsistency", "False - Too biased", "False - Unmanaged"], correct: 1 },
-    { q: "Relationship between purpose and personas?", options: ["Purpose defines personas", "Personas define purpose", "Same thing", "No relationship"], correct: 1 },
-    { q: "Marketing needs in a persona?", options: ["Lead quality", "Communication channels", "Buying power", "Feedback"], correct: 2 },
-    { q: "Sales needs in a persona?", options: ["Campaign ideas", "Qualification criteria", "Brand loyalty", "Social habits"], correct: 2 },
-    { q: "Customer service needs in a persona?", options: ["Sales targets", "Common roadblocks", "Lead source", "Ads preferences"], correct: 2 },
-    { q: "If person doesn't match persona, what to do?", options: ["Stop talking", "Force match", "Trust individual over persona", "Change persona"], correct: 3 },
-    { q: "What are Key Results?", options: ["Broad goals", "Quantitative benchmarks", "Names", "Deadlines"], correct: 2 },
-    { q: "Objectives vs Key Results?", options: ["Objectives short-lived", "KR long-lived", "Objectives 'what', KR 'how'", "No difference"], correct: 3 },
-    { q: "What is three horizon framework?", options: ["Past/Present", "Short/Med/Long growth", "Sales/Marketing/Service", "Tactics/Ops"], correct: 2 },
-    { q: "Horizon one symbolizes?", options: ["Innovation", "High-growth", "Core business/Profit", "Future"], correct: 3 },
-    { q: "Horizon three symbolizes?", options: ["Daily ops", "Scaling ideas", "Radical innovation", "Decreasing revenue"], correct: 3 },
-    { q: "True or false? Reallocate if one horizon underperforms.", options: ["True", "False"], correct: 2 },
-    { q: "Max number of top priorities?", options: ["1", "3", "5", "10"], correct: 2 },
-    { q: "Attract people by using _________ for content.", options: ["Database", "Leaders", "Your expertise", "Sales knowledge"], correct: 3 },
-    { q: "Engage stage - what to collect?", options: ["Goals", "First name", "Information", "Email"], correct: 3 },
-    { q: "Service team use of buyer's journey?", options: ["Cross-sell", "Up-sell", "Resell", "All of the above"], correct: 4 },
-    { q: "Relationship profits/purpose?", options: ["Purpose generates", "Profits enable purpose", "Profits distract", "Purpose drives"], correct: 2 },
-    { q: "Advice for 'Job to be Done'?", options: ["Guess", "Wait for 100", "Interview first few", "Ask competitors"], correct: 3 },
-    { q: "Why customer happiness matters?", options: ["Word-of-mouth", "Prevent negative", "Repeat business", "All of the above"], correct: 4 },
-    { q: "True or false? Don't think of sales as funnel with flywheel.", options: ["True", "False"], correct: 2 },
-    { q: "Flywheel improves handoff how?", options: ["Merge teams", "Visibility in steps", "Sales post-sale", "Granular reporting"], correct: 2 },
-    { q: "Principles of inbound?", options: ["Personalize/Empathize", "Energize/Synergize", "Analyze/Capitalize", "Categorize"], correct: 1 },
-    { q: "Attract stage focus?", options: ["Trusted advisor", "Helpful content", "Immediate value", "Exceeding expectations"], correct: 2 },
-    { q: "Percentage stopping comms due to irrelevant messages?", options: ["94%", "74%", "77%", "85%"], correct: 1 },
-    { q: "Percentage never returning after 1 bad experience?", options: ["61%", "46%", "51%", "34%"], correct: 3 },
-    { q: "To build trust, align with how they _________.", options: ["think/research/purchase", "work/live/play", "talk/act", "pay/save"], correct: 1 }
-];
-
-let stu = {}, examSet = [], currIdx = 0, score = 0, timerInt, dLog = [], curLang = localStorage.getItem('siteLang')||'fr';
-
-// --- THEME ---
-function toggleTheme() {
-    const b = document.getElementById('body-tag');
-    const txt = document.getElementById('theme-text');
-    if(!b.classList.contains('dark-theme') && !b.classList.contains('light-theme')) {
-        b.classList.add('dark-theme'); txt.innerText = "Mode: Dark";
-    } else if(b.classList.contains('dark-theme')) {
-        b.classList.replace('dark-theme', 'light-theme'); txt.innerText = "Mode: Light";
-    } else {
-        b.classList.remove('light-theme'); txt.innerText = "Mode: Auto";
-    }
-}
-
-// --- LOGIC ---
-function applyLang() {
-    const t = translations[curLang];
-    document.getElementById('tr-title').innerText = t.title;
-    document.getElementById('tr-label-class').innerText = t.labelClass;
-    document.getElementById('tr-label-fname').innerText = t.labelFname;
-    document.getElementById('tr-label-lname').innerText = t.labelLname;
-    document.getElementById('tr-label-email').innerText = t.labelEmail;
-    document.getElementById('tr-label-pw').innerText = t.labelPw;
-    document.getElementById('tr-btn-start').innerText = t.btnStart;
-    document.getElementById('tr-q-label').innerText = t.qLabel;
-    document.getElementById('tr-end-title').innerText = t.endTitle;
-    document.getElementById('tr-end-msg').innerText = t.endMsg;
-    document.getElementById('lang-selector').value = curLang;
-}
-
-function changeLang(l) { curLang = l; localStorage.setItem('siteLang', l); applyLang(); }
-
-function checkAccess() {
-    const cls = document.getElementById('class-id').value.trim().toUpperCase();
-    const fn = document.getElementById('fname').value.trim();
-    const ln = document.getElementById('lname').value.trim();
-    const mail = document.getElementById('email').value.trim().toLowerCase();
-    const pw = document.getElementById('quiz-pw-input').value;
-    if(!cls || !fn || !ln || !mail || pw !== QUIZ_PW) return alert("Error.");
-    if(!mail.endsWith(DOMAIN)) return alert("Devinci email required.");
-    if(localStorage.getItem('done_'+mail)) return alert("Already submitted.");
-    stu = { class: cls, fname: fn, lname: ln, email: mail };
-    start();
-}
-
-function start() {
-    examSet = JSON.parse(JSON.stringify(questionsData));
-    examSet.forEach(q => { q.correctTxt = q.options[q.correct-1]; q.options.sort(() => Math.random() - 0.5); });
-    examSet.sort(() => Math.random() - 0.5);
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.remove('hidden');
-    showQuestion();
-}
-
-function showQuestion() {
-    if(currIdx >= examSet.length) return end();
-    let t = 60; document.getElementById('timer').innerText = t+"s";
-    clearInterval(timerInt);
-    timerInt = setInterval(() => {
-        t--; document.getElementById('timer').innerText = t+"s";
-        if(t <= 0) validate("TIMEOUT");
-    }, 1000);
-
-    const q = examSet[currIdx];
-    document.getElementById('q-current').innerText = currIdx + 1;
-    document.getElementById('question-text').innerText = q.q;
-    const box = document.getElementById('options-container'); 
-    box.innerHTML = '';
-    
-    q.options.forEach(o => {
-        const b = document.createElement('button');
-        b.className = 'option-btn';
-        b.innerText = o;
-        b.onclick = () => validate(o);
-        box.appendChild(b);
-    });
-}
-
-function validate(ans) {
-    clearInterval(timerInt);
-    const q = examSet[currIdx];
-    const win = (ans === q.correctTxt);
-    if(win) score++;
-    dLog.push({ q: q.q, stu: ans, correct: q.correctTxt, stat: win ? '✅' : '❌' });
-    currIdx++;
-    showQuestion(); // Passage à la question suivante
-}
-
-function end() {
-    const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    logs.push({ ...stu, score, details: dLog, date: new Date().toLocaleString() });
-    localStorage.setItem('examLogs', JSON.stringify(logs));
-    localStorage.setItem('done_'+stu.email, 'true');
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('result-screen').classList.remove('hidden');
-    document.getElementById('final-score-display').innerText = score + " / 60";
-}
-
-// ADMIN
-function showAdmin() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('admin-screen').classList.remove('hidden'); }
-function loginAdmin() { if(document.getElementById('admin-pw').value === ADMIN_CODE) { document.getElementById('admin-auth').classList.add('hidden'); document.getElementById('admin-content').classList.remove('hidden'); refreshTable(); } }
-function refreshTable() {
-    const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    logs.sort((a,b) => a.class.localeCompare(b.class) || a.lname.localeCompare(b.lname));
-    document.getElementById('log-body').innerHTML = logs.map((l, i) => `<tr><td><input type="checkbox" class="log-cb" data-idx="${i}"></td><td>${l.class}</td><td onclick="view(${i})" style="color:var(--hs-orange); cursor:pointer;">${l.lname.toUpperCase()}</td><td>${l.score}/60</td></tr>`).join('');
-}
-function view(i) {
-    const l = JSON.parse(localStorage.getItem('examLogs'))[i];
-    document.getElementById('modal-title').innerText = l.fname + " " + l.lname;
-    document.getElementById('modal-body').innerHTML = l.details.map(d => `<div style="margin-bottom:8px; border-bottom:1px solid #eee; font-size:0.75rem"><b>${d.q}</b><br>Rép: ${d.stu} ${d.stat}</div>`).join('');
-    document.getElementById('detail-modal').classList.remove('hidden');
-}
-function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
-function toggleSelectAll() { document.querySelectorAll('.log-cb').forEach(c => c.checked = document.getElementById('select-all').checked); }
-function deleteSelection() { if(confirm("Supprimer ?")) { let l = JSON.parse(localStorage.getItem('examLogs') || '[]'); Array.from(document.querySelectorAll('.log-cb:checked')).map(c => parseInt(c.dataset.idx)).sort((a,b)=>b-a).forEach(i => l.splice(i,1)); localStorage.setItem('examLogs', JSON.stringify(l)); refreshTable(); } }
-function exportToExcel() {
-    const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    const data = Array.from(document.querySelectorAll('.log-cb:checked')).map(c => { const log = logs[parseInt(c.dataset.idx)]; return { Classe: log.class, Nom: log.lname, Score: log.score }; });
-    if(!data.length) return alert("Select students.");
-    const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Scores"); XLSX.writeFile(wb, "HubSpot_Scores.xlsx");
-}
-
 window.onload = applyLang;
 </script>
 </body>
