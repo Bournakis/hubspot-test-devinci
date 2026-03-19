@@ -9,34 +9,48 @@
         :root { 
             --hs-orange: #ff7a59; --bg-color: #f5f8fa; --card-bg: #ffffff;
             --text-color: #33475b; --border-color: #cbd6e2; --btn-opt-bg: #f8fafd;
+            --admin-ghost: rgba(0,0,0,0.03);
         }
         body.dark-theme { 
             --bg-color: #1a2632; --card-bg: #2e3f50; --text-color: #eaf0f6; 
             --border-color: #4f6f8f; --btn-opt-bg: #3d4f61;
+            --admin-ghost: rgba(255,255,255,0.02);
         }
         @media (prefers-color-scheme: dark) {
             body:not(.light-theme) { 
                 --bg-color: #1a2632; --card-bg: #2e3f50; --text-color: #eaf0f6; 
                 --border-color: #4f6f8f; --btn-opt-bg: #3d4f61;
+                --admin-ghost: rgba(255,255,255,0.02);
             }
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
-        .header-tools { width: 100%; max-width: 800px; display: flex; justify-content: flex-end; margin-bottom: 15px; }
-        .theme-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .container { background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); width: 100%; max-width: 700px; text-align: center; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; position: relative; }
+        
+        /* TOGGLE THEME PETIT EN HAUT A DROITE */
+        .header-tools { position: absolute; top: 10px; right: 10px; z-index: 10; }
+        .theme-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 10px; border-radius: 15px; cursor: pointer; font-size: 0.75rem; font-weight: 600; opacity: 0.7; transition: opacity 0.2s; }
+        .theme-btn:hover { opacity: 1; }
+
+        .container { background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); width: 100%; max-width: 700px; text-align: center; box-sizing: border-box; z-index: 2; margin-top: 40px; }
+        
         h1 { color: var(--hs-orange); font-size: 1.8rem; margin-bottom: 25px; }
         h2 { font-size: 1.4rem; line-height: 1.5; margin-bottom: 30px; color: var(--text-color); text-align: left; }
+
         .form-group { text-align: left; margin-bottom: 18px; }
-        label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; color: var(--text-color); }
-        input { padding: 14px; width: 100%; border: 2px solid var(--border-color); border-radius: 10px; font-size: 1rem; background: var(--card-bg); color: var(--text-color); box-sizing: border-box; transition: border-color 0.2s; }
-        input:focus { border-color: var(--hs-orange); outline: none; }
-        button.primary { background: var(--hs-orange); color: white; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.2rem; width: 100%; margin: 15px 0; transition: transform 0.1s; }
-        #timer { font-size: 2.8rem; color: #ff4444; font-weight: 800; margin-bottom: 15px; letter-spacing: -1px; }
-        .option-btn { display: block; width: 100%; text-align: left; background: var(--btn-opt-bg); border: 2px solid var(--border-color); color: var(--text-color) !important; margin-bottom: 15px; padding: 20px; border-radius: 12px; cursor: pointer; font-size: 1.25rem; line-height: 1.4; transition: all 0.2s; }
-        .option-btn:hover { border-color: var(--hs-orange); background: var(--card-bg); transform: translateY(-2px); }
+        label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
+        input { padding: 14px; width: 100%; border: 2px solid var(--border-color); border-radius: 10px; font-size: 1rem; background: var(--card-bg); color: var(--text-color); box-sizing: border-box; }
+        
+        button.primary { background: var(--hs-orange); color: white; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.2rem; width: 100%; margin: 15px 0; }
+        
+        #timer { font-size: 2.8rem; color: #ff4444; font-weight: 800; margin-bottom: 15px; }
+        
+        .option-btn { display: block; width: 100%; text-align: left; background: var(--btn-opt-bg); border: 2px solid var(--border-color); color: var(--text-color) !important; margin-bottom: 15px; padding: 20px; border-radius: 12px; cursor: pointer; font-size: 1.25rem; line-height: 1.4; }
+        
         .hidden { display: none !important; }
-        .admin-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 20px; }
-        .admin-table th, .admin-table td { border: 1px solid var(--border-color); padding: 12px; text-align: left; }
+        
+        #ghost-admin { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); font-size: 0.6rem; color: var(--admin-ghost); cursor: pointer; user-select: none; }
+
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 20px; }
+        .admin-table th, .admin-table td { border: 1px solid var(--border-color); padding: 8px; text-align: left; }
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
     </style>
@@ -44,7 +58,7 @@
 <body id="body-tag">
 
 <div class="header-tools">
-    <button class="theme-btn" onclick="toggleTheme()">🌓 <span id="theme-text">Mode: Auto</span></button>
+    <button class="theme-btn" onclick="toggleTheme()">🌓 <span id="theme-text">Auto</span></button>
 </div>
 
 <div class="container">
@@ -55,15 +69,12 @@
         <div class="form-group"><label id="tr-label-lname">Nom</label><input type="text" id="lname"></div>
         <div class="form-group"><label id="tr-label-email">Email @edu.devinci.fr</label><input type="email" id="email"></div>
         <div class="form-group"><label id="tr-label-pw">Mot de passe</label><input type="password" id="quiz-pw-input"></div>
-        <button class="primary" onclick="checkAccess()" id="tr-btn-start">DÉMARRER</button>
-        <p onclick="showAdmin()" style="margin-top:20px; font-size:0.85rem; opacity:0.7; cursor:pointer; text-decoration: underline;">Admin Access</p>
+        <button class="primary" onclick="checkAccess()" id="tr-btn-start">DÉMARRER LE QUIZ</button>
     </div>
 
     <div id="quiz-screen" class="hidden">
         <div id="timer">60s</div>
-        <div style="font-weight: bold; margin-bottom: 10px; font-size: 1.1rem;">
-            <span id="tr-q-label">Question</span> <span id="q-current">1</span> / 60
-        </div>
+        <div style="font-weight: bold; margin-bottom: 10px;"><span id="tr-q-label">Question</span> <span id="q-current">1</span> / 60</div>
         <h2 id="question-text"></h2>
         <div id="options-container"></div>
     </div>
@@ -71,38 +82,38 @@
     <div id="result-screen" class="hidden">
         <h1 id="tr-end-title">Terminé</h1>
         <div id="final-score-display" style="font-size: 4rem; margin: 25px 0; color: var(--hs-orange); font-weight: 800;"></div>
-        <p id="tr-end-msg" style="font-size: 1.2rem;"></p>
+        <p id="tr-end-msg"></p>
         <button class="primary" id="tr-btn-back" onclick="location.reload()">Retour</button>
     </div>
 
     <div id="admin-screen" class="hidden">
-        <h2 style="text-align: center;">Dashboard Admin</h2>
+        <h2>Dashboard Admin</h2>
         <div id="admin-auth">
-            <input type="password" id="admin-pw" placeholder="Code Secret Admin" style="margin-bottom: 10px;">
-            <button class="primary" onclick="loginAdmin()">Accéder aux scores</button>
+            <input type="password" id="admin-pw" placeholder="Code Secret" style="margin-bottom:10px;">
+            <button class="primary" onclick="loginAdmin()">Entrer</button>
         </div>
         <div id="admin-content" class="hidden">
             <div class="form-group">
-                <label>🌍 Langue du portail / Portal Language</label>
-                <select id="lang-selector" onchange="changeLang(this.value)" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--border-color); background: var(--card-bg); color: var(--text-color);">
+                <label>🌍 Langue / Language</label>
+                <select id="lang-selector" onchange="changeLang(this.value)" style="width:100%; padding:10px; border-radius:8px;">
                     <option value="fr">Français</option>
                     <option value="en">English</option>
                 </select>
             </div>
-            <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button onclick="exportToExcel()" style="flex:1; background:#27ae60; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">Export Excel</button>
-                <button onclick="deleteSelection()" style="flex:1; background:#e74c3c; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">Supprimer</button>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <button onclick="exportToExcel()" style="flex:1; background:#27ae60; color:white; border:none; padding:10px; border-radius:8px;">Excel</button>
+                <button onclick="deleteSelection()" style="flex:1; background:#e74c3c; color:white; border:none; padding:10px; border-radius:8px;">Supprimer</button>
             </div>
-            <div style="overflow-x:auto;">
-                <table class="admin-table">
-                    <thead><tr><th><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th><th>Classe</th><th>Nom</th><th>Score</th></tr></thead>
-                    <tbody id="log-body"></tbody>
-                </table>
-            </div>
-            <button onclick="location.reload()" style="background:#33475b; color:white; border:none; padding:12px; width:100%; margin-top:20px; border-radius:8px; cursor:pointer;">Quitter l'Admin</button>
+            <table class="admin-table">
+                <thead><tr><th><input type="checkbox" onclick="toggleSelectAll()"></th><th>Classe</th><th>Nom</th><th>Score</th></tr></thead>
+                <tbody id="log-body"></tbody>
+            </table>
+            <button onclick="location.reload()" style="background:gray; color:white; border:none; padding:12px; width:100%; margin-top:15px; border-radius:8px;">Quitter</button>
         </div>
     </div>
 </div>
+
+<div id="ghost-admin" onclick="showAdmin()">Admin Access</div>
 
 <div id="detail-modal" class="modal hidden">
     <div class="modal-content"><h3 id="modal-title"></h3><div id="modal-body"></div><button onclick="closeModal()" class="primary">Fermer</button></div>
@@ -116,12 +127,12 @@ const DOMAIN = "@edu.devinci.fr";
 const translations = {
     fr: { 
         title: "Portail Certification HubSpot", labelClass: "Classe", labelFname: "Prénom", labelLname: "Nom", labelEmail: "Email @edu.devinci.fr", labelPw: "Mot de passe de l'examen", 
-        btnStart: "DÉMARRER L'EXAMEN", qLabel: "Question", endTitle: "Examen Terminé", endMsg: "Vos résultats ont été enregistrés avec succès.", 
+        btnStart: "DÉMARRER LE QUIZ", qLabel: "Question", endTitle: "Quiz Terminé", endMsg: "Vos résultats ont été enregistrés.", 
         timeOver: "TEMPS ÉCOULÉ", btnBack: "Retour à l'accueil", phClass: "ex: A3-MKT", phFname: "Votre prénom", phLname: "Votre nom", phEmail: "prenom.nom@edu.devinci.fr", phPw: "Code fourni"
     },
     en: { 
         title: "HubSpot Certification Portal", labelClass: "Class", labelFname: "First Name", labelLname: "Last Name", labelEmail: "Email @edu.devinci.fr", labelPw: "Exam Password", 
-        btnStart: "START FINAL EXAM", qLabel: "Question", endTitle: "Exam Completed", endMsg: "Your results have been successfully saved.", 
+        btnStart: "START QUIZ", qLabel: "Question", endTitle: "Quiz Completed", endMsg: "Your results have been saved.", 
         timeOver: "TIME EXPIRED", btnBack: "Back to Home", phClass: "e.g., A3-MKT", phFname: "First name", phLname: "Last name", phEmail: "first.last@edu.devinci.fr", phPw: "Exam code"
     }
 };
@@ -195,11 +206,11 @@ function toggleTheme() {
     const b = document.getElementById('body-tag');
     const txt = document.getElementById('theme-text');
     if(!b.classList.contains('dark-theme') && !b.classList.contains('light-theme')) {
-        b.classList.add('dark-theme'); txt.innerText = "Mode: Dark";
+        b.classList.add('dark-theme'); txt.innerText = "Dark";
     } else if(b.classList.contains('dark-theme')) {
-        b.classList.replace('dark-theme', 'light-theme'); txt.innerText = "Mode: Light";
+        b.classList.replace('dark-theme', 'light-theme'); txt.innerText = "Light";
     } else {
-        b.classList.remove('light-theme'); txt.innerText = "Mode: Auto";
+        b.classList.remove('light-theme'); txt.innerText = "Auto";
     }
 }
 
@@ -243,6 +254,7 @@ function startQuiz() {
     examSet.forEach(q => { q.correctTxt = q.options[q.correct-1]; q.options.sort(() => Math.random() - 0.5); });
     examSet.sort(() => Math.random() - 0.5);
     document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('ghost-admin').classList.add('hidden');
     document.getElementById('quiz-screen').classList.remove('hidden');
     showQuestion();
 }
@@ -258,14 +270,11 @@ function showQuestion() {
     const q = examSet[currIdx];
     document.getElementById('q-current').innerText = currIdx + 1;
     document.getElementById('question-text').innerText = q.q;
-    const box = document.getElementById('options-container'); 
-    box.innerHTML = '';
+    const box = document.getElementById('options-container'); box.innerHTML = '';
     q.options.forEach(o => {
         const b = document.createElement('button');
-        b.className = 'option-btn';
-        b.innerText = o;
-        b.onclick = () => validateAnswer(o);
-        box.appendChild(b);
+        b.className = 'option-btn'; b.innerText = o;
+        b.onclick = () => validateAnswer(o); box.appendChild(b);
     });
 }
 
@@ -275,50 +284,61 @@ function validateAnswer(ans) {
     const win = (ans === q.correctTxt);
     if(win) score++;
     dLog.push({ q: q.q, stu: ans, correct: q.correctTxt, stat: win ? '✅' : '❌' });
-    currIdx++;
-    showQuestion();
+    currIdx++; showQuestion();
 }
 
 function endQuiz() {
-    const t = translations[curLang]; // On récupère la langue actuelle
+    const t = translations[curLang];
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
     logs.push({ ...stu, score, details: dLog, date: new Date().toLocaleString() });
     localStorage.setItem('examLogs', JSON.stringify(logs));
     localStorage.setItem('done_'+stu.email, 'true');
-    
-    // Mise à jour dynamique des textes de fin avant d'afficher l'écran
     document.getElementById('tr-end-title').innerText = t.endTitle;
     document.getElementById('tr-end-msg').innerText = t.endMsg;
     document.getElementById('tr-btn-back').innerText = t.btnBack;
-    
     document.getElementById('quiz-screen').classList.add('hidden');
     document.getElementById('result-screen').classList.remove('hidden');
     document.getElementById('final-score-display').innerText = score + " / 60";
 }
 
-function showAdmin() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('admin-screen').classList.remove('hidden'); }
-function loginAdmin() { if(document.getElementById('admin-pw').value === ADMIN_CODE) { document.getElementById('admin-auth').classList.add('hidden'); document.getElementById('admin-content').classList.remove('hidden'); refreshTable(); } }
+function showAdmin() { 
+    document.getElementById('login-screen').classList.add('hidden'); 
+    document.getElementById('admin-screen').classList.remove('hidden'); 
+    document.getElementById('ghost-admin').classList.add('hidden');
+}
+
+function loginAdmin() { 
+    if(document.getElementById('admin-pw').value === ADMIN_CODE) { 
+        document.getElementById('admin-auth').classList.add('hidden'); 
+        document.getElementById('admin-content').classList.remove('hidden'); 
+        refreshTable(); 
+    } 
+}
+
 function refreshTable() {
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
     logs.sort((a,b) => a.class.localeCompare(b.class) || a.lname.localeCompare(b.lname));
-    document.getElementById('log-body').innerHTML = logs.map((l, i) => `<tr><td><input type="checkbox" class="log-cb" data-idx="${i}"></td><td>${l.class}</td><td onclick="viewDetail(${i})" style="color:var(--hs-orange); cursor:pointer; font-weight:bold;">${l.lname.toUpperCase()}</td><td>${l.score}/60</td></tr>`).join('');
+    document.getElementById('log-body').innerHTML = logs.map((l, i) => `<tr><td><input type="checkbox" class="log-cb" data-idx="${i}"></td><td>${l.class}</td><td onclick="viewDetail(${i})" style="color:var(--hs-orange); cursor:pointer;">${l.lname.toUpperCase()}</td><td>${l.score}/60</td></tr>`).join('');
 }
+
 function viewDetail(i) {
     const l = JSON.parse(localStorage.getItem('examLogs'))[i];
-    document.getElementById('modal-title').innerText = l.fname + " " + l.lname + " - " + l.score + "/60";
-    document.getElementById('modal-body').innerHTML = l.details.map(d => `<div style="margin-bottom:12px; border-bottom:1px solid #ddd; padding-bottom:5px; font-size:0.85rem"><b>Q: ${d.q}</b><br>Rép: ${d.stu} ${d.stat}<br><span style="color:green">Correct: ${d.correct}</span></div>`).join('');
+    document.getElementById('modal-title').innerText = l.fname + " " + l.lname;
+    document.getElementById('modal-body').innerHTML = l.details.map(d => `<div style="font-size:0.8rem; margin-bottom:8px;">${d.q}<br><b>${d.stu}</b> ${d.stat}</div>`).join('');
     document.getElementById('detail-modal').classList.remove('hidden');
 }
+
 function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
-function toggleSelectAll() { document.querySelectorAll('.log-cb').forEach(c => c.checked = document.getElementById('select-all').checked); }
+function toggleSelectAll() { document.querySelectorAll('.log-cb').forEach(c => c.checked = !c.checked); }
 function deleteSelection() { if(confirm("Supprimer ?")) { let l = JSON.parse(localStorage.getItem('examLogs') || '[]'); Array.from(document.querySelectorAll('.log-cb:checked')).map(c => parseInt(c.dataset.idx)).sort((a,b)=>b-a).forEach(i => l.splice(i,1)); localStorage.setItem('examLogs', JSON.stringify(l)); refreshTable(); } }
+
 function exportToExcel() {
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    const data = Array.from(document.querySelectorAll('.log-cb:checked')).map(c => { const log = logs[parseInt(c.dataset.idx)]; return { Classe: log.class, Nom: log.lname, Prénom: log.fname, Score: log.score, Date: log.date }; });
-    if(!data.length) return alert("Sélectionnez des lignes.");
+    const data = Array.from(document.querySelectorAll('.log-cb:checked')).map(c => { const log = logs[parseInt(c.dataset.idx)]; return { Classe: log.class, Nom: log.lname, Score: log.score }; });
     const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Résultats"); XLSX.writeFile(wb, "HubSpot_Results.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Scores"); XLSX.writeFile(wb, "HubSpot_Scores.xlsx");
 }
+
 window.onload = applyLang;
 </script>
 </body>
