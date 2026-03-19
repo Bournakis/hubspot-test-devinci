@@ -21,38 +21,22 @@
             }
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
-        
         .header-tools { width: 100%; max-width: 800px; display: flex; justify-content: flex-end; margin-bottom: 15px; }
         .theme-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
         .container { background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); width: 100%; max-width: 700px; text-align: center; box-sizing: border-box; }
-        
         h1 { color: var(--hs-orange); font-size: 1.8rem; margin-bottom: 25px; }
         h2 { font-size: 1.4rem; line-height: 1.5; margin-bottom: 30px; color: var(--text-color); text-align: left; }
-
         .form-group { text-align: left; margin-bottom: 18px; }
         label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; color: var(--text-color); }
         input { padding: 14px; width: 100%; border: 2px solid var(--border-color); border-radius: 10px; font-size: 1rem; background: var(--card-bg); color: var(--text-color); box-sizing: border-box; transition: border-color 0.2s; }
         input:focus { border-color: var(--hs-orange); outline: none; }
-        
         button.primary { background: var(--hs-orange); color: white; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.2rem; width: 100%; margin: 15px 0; transition: transform 0.1s; }
-        button.primary:active { transform: scale(0.98); }
-        
         #timer { font-size: 2.8rem; color: #ff4444; font-weight: 800; margin-bottom: 15px; letter-spacing: -1px; }
-        
-        .option-btn { 
-            display: block; width: 100%; text-align: left; 
-            background: var(--btn-opt-bg); border: 2px solid var(--border-color); 
-            color: var(--text-color) !important; margin-bottom: 15px; padding: 20px; 
-            border-radius: 12px; cursor: pointer; font-size: 1.25rem; 
-            line-height: 1.4; transition: all 0.2s;
-        }
+        .option-btn { display: block; width: 100%; text-align: left; background: var(--btn-opt-bg); border: 2px solid var(--border-color); color: var(--text-color) !important; margin-bottom: 15px; padding: 20px; border-radius: 12px; cursor: pointer; font-size: 1.25rem; line-height: 1.4; transition: all 0.2s; }
         .option-btn:hover { border-color: var(--hs-orange); background: var(--card-bg); transform: translateY(-2px); }
-
         .hidden { display: none !important; }
         .admin-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 20px; }
         .admin-table th, .admin-table td { border: 1px solid var(--border-color); padding: 12px; text-align: left; }
-        
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
     </style>
@@ -66,32 +50,11 @@
 <div class="container">
     <div id="login-screen">
         <h1 id="tr-title">Portail Certification HubSpot</h1>
-        
-        <div class="form-group">
-            <label id="tr-label-class">Classe</label>
-            <input type="text" id="class-id" placeholder="A3-MKT">
-        </div>
-        
-        <div class="form-group">
-            <label id="tr-label-fname">Prénom</label>
-            <input type="text" id="fname" placeholder="Votre prénom">
-        </div>
-        
-        <div class="form-group">
-            <label id="tr-label-lname">Nom</label>
-            <input type="text" id="lname" placeholder="Votre nom">
-        </div>
-        
-        <div class="form-group">
-            <label id="tr-label-email">Email @edu.devinci.fr</label>
-            <input type="email" id="email" placeholder="nom.prenom@edu.devinci.fr">
-        </div>
-        
-        <div class="form-group">
-            <label id="tr-label-pw">Mot de passe de l'examen</label>
-            <input type="password" id="quiz-pw-input" placeholder="Code exam">
-        </div>
-        
+        <div class="form-group"><label id="tr-label-class">Classe</label><input type="text" id="class-id"></div>
+        <div class="form-group"><label id="tr-label-fname">Prénom</label><input type="text" id="fname"></div>
+        <div class="form-group"><label id="tr-label-lname">Nom</label><input type="text" id="lname"></div>
+        <div class="form-group"><label id="tr-label-email">Email @edu.devinci.fr</label><input type="email" id="email"></div>
+        <div class="form-group"><label id="tr-label-pw">Mot de passe</label><input type="password" id="quiz-pw-input"></div>
         <button class="primary" onclick="checkAccess()" id="tr-btn-start">DÉMARRER</button>
         <p onclick="showAdmin()" style="margin-top:20px; font-size:0.85rem; opacity:0.7; cursor:pointer; text-decoration: underline;">Admin Access</p>
     </div>
@@ -113,7 +76,7 @@
     </div>
 
     <div id="admin-screen" class="hidden">
-        <h2 style="text-align: center;">Dashboard Administrateur</h2>
+        <h2 style="text-align: center;">Dashboard Admin</h2>
         <div id="admin-auth">
             <input type="password" id="admin-pw" placeholder="Code Secret Admin" style="margin-bottom: 10px;">
             <button class="primary" onclick="loginAdmin()">Accéder aux scores</button>
@@ -154,16 +117,15 @@ const translations = {
     fr: { 
         title: "Portail Certification HubSpot", labelClass: "Classe", labelFname: "Prénom", labelLname: "Nom", labelEmail: "Email @edu.devinci.fr", labelPw: "Mot de passe de l'examen", 
         btnStart: "DÉMARRER L'EXAMEN", qLabel: "Question", endTitle: "Examen Terminé", endMsg: "Vos résultats ont été enregistrés avec succès.", 
-        timeOver: "TEMPS ÉCOULÉ", btnBack: "Retour à l'accueil", phClass: "ex: A3-MKT", phFname: "Votre prénom", phLname: "Votre nom", phEmail: "prenom.nom@edu.devinci.fr", phPw: "Code fourni par l'intervenant"
+        timeOver: "TEMPS ÉCOULÉ", btnBack: "Retour à l'accueil", phClass: "ex: A3-MKT", phFname: "Votre prénom", phLname: "Votre nom", phEmail: "prenom.nom@edu.devinci.fr", phPw: "Code fourni"
     },
     en: { 
         title: "HubSpot Certification Portal", labelClass: "Class", labelFname: "First Name", labelLname: "Last Name", labelEmail: "Email @edu.devinci.fr", labelPw: "Exam Password", 
         btnStart: "START FINAL EXAM", qLabel: "Question", endTitle: "Exam Completed", endMsg: "Your results have been successfully saved.", 
-        timeOver: "TIME EXPIRED", btnBack: "Back to Home", phClass: "e.g., A3-MKT", phFname: "First name", phLname: "Last name", phEmail: "first.last@edu.devinci.fr", phPw: "Exam code provided"
+        timeOver: "TIME EXPIRED", btnBack: "Back to Home", phClass: "e.g., A3-MKT", phFname: "First name", phLname: "Last name", phEmail: "first.last@edu.devinci.fr", phPw: "Exam code"
     }
 };
 
-// --- BASE DE QUESTIONS (COMPLÈTE) ---
 const questionsData = [
     { q: "What is the buyer's journey?", options: ["The process a customer goes through after they've purchased a product", "The process a customer goes through as they learn about your brand", "The active research process a someone goes through leading up to a purchase", "The inbound methodology from a customer's perspective"], correct: 3 },
     { q: "If you're creating content focused on solutions to your buyer persona's problem, where does that content fit into the buyer's journey?", options: ["Awareness", "Consideration", "Decision", "All of the above"], correct: 2 },
@@ -229,7 +191,6 @@ const questionsData = [
 
 let stu = {}, examSet = [], currIdx = 0, score = 0, timerInt, dLog = [], curLang = localStorage.getItem('siteLang')||'fr';
 
-// --- THEME ---
 function toggleTheme() {
     const b = document.getElementById('body-tag');
     const txt = document.getElementById('theme-text');
@@ -242,7 +203,6 @@ function toggleTheme() {
     }
 }
 
-// --- LANGUE ---
 function applyLang() {
     const t = translations[curLang];
     document.getElementById('tr-title').innerText = t.title;
@@ -256,7 +216,6 @@ function applyLang() {
     document.getElementById('tr-end-title').innerText = t.endTitle;
     document.getElementById('tr-end-msg').innerText = t.endMsg;
     document.getElementById('tr-btn-back').innerText = t.btnBack;
-
     document.getElementById('class-id').placeholder = t.phClass;
     document.getElementById('fname').placeholder = t.phFname;
     document.getElementById('lname').placeholder = t.phLname;
@@ -266,18 +225,15 @@ function applyLang() {
 
 function changeLang(l) { curLang = l; localStorage.setItem('siteLang', l); applyLang(); }
 
-// --- LOGIQUE QUIZ ---
 function checkAccess() {
     const cls = document.getElementById('class-id').value.trim().toUpperCase();
     const fn = document.getElementById('fname').value.trim();
     const ln = document.getElementById('lname').value.trim();
     const mail = document.getElementById('email').value.trim().toLowerCase();
     const pw = document.getElementById('quiz-pw-input').value;
-    
-    if(!cls || !fn || !ln || !mail || pw !== QUIZ_PW) return alert(curLang==='fr'?"Champs incomplets ou code erroné.":"Incomplete fields or wrong code.");
+    if(!cls || !fn || !ln || !mail || pw !== QUIZ_PW) return alert(curLang==='fr'?"Saisie invalide.":"Invalid input.");
     if(!mail.endsWith(DOMAIN)) return alert(curLang==='fr'?"Email Devinci requis.":"Devinci email required.");
     if(localStorage.getItem('done_'+mail)) return alert(curLang==='fr'?"Déjà fait.":"Already submitted.");
-    
     stu = { class: cls, fname: fn, lname: ln, email: mail };
     startQuiz();
 }
@@ -299,13 +255,11 @@ function showQuestion() {
         t--; document.getElementById('timer').innerText = t+"s";
         if(t <= 0) validateAnswer("TIMEOUT");
     }, 1000);
-
     const q = examSet[currIdx];
     document.getElementById('q-current').innerText = currIdx + 1;
     document.getElementById('question-text').innerText = q.q;
     const box = document.getElementById('options-container'); 
     box.innerHTML = '';
-    
     q.options.forEach(o => {
         const b = document.createElement('button');
         b.className = 'option-btn';
@@ -326,16 +280,22 @@ function validateAnswer(ans) {
 }
 
 function endQuiz() {
+    const t = translations[curLang]; // On récupère la langue actuelle
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
     logs.push({ ...stu, score, details: dLog, date: new Date().toLocaleString() });
     localStorage.setItem('examLogs', JSON.stringify(logs));
     localStorage.setItem('done_'+stu.email, 'true');
+    
+    // Mise à jour dynamique des textes de fin avant d'afficher l'écran
+    document.getElementById('tr-end-title').innerText = t.endTitle;
+    document.getElementById('tr-end-msg').innerText = t.endMsg;
+    document.getElementById('tr-btn-back').innerText = t.btnBack;
+    
     document.getElementById('quiz-screen').classList.add('hidden');
     document.getElementById('result-screen').classList.remove('hidden');
     document.getElementById('final-score-display').innerText = score + " / 60";
 }
 
-// --- ADMIN ---
 function showAdmin() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('admin-screen').classList.remove('hidden'); }
 function loginAdmin() { if(document.getElementById('admin-pw').value === ADMIN_CODE) { document.getElementById('admin-auth').classList.add('hidden'); document.getElementById('admin-content').classList.remove('hidden'); refreshTable(); } }
 function refreshTable() {
@@ -346,12 +306,12 @@ function refreshTable() {
 function viewDetail(i) {
     const l = JSON.parse(localStorage.getItem('examLogs'))[i];
     document.getElementById('modal-title').innerText = l.fname + " " + l.lname + " - " + l.score + "/60";
-    document.getElementById('modal-body').innerHTML = l.details.map(d => `<div style="margin-bottom:12px; border-bottom:1px solid #ddd; padding-bottom:5px; font-size:0.85rem"><b>Q: ${d.q}</b><br>Rép: ${d.stu} ${d.stat}<br><span style="color:green">Corect: ${d.correct}</span></div>`).join('');
+    document.getElementById('modal-body').innerHTML = l.details.map(d => `<div style="margin-bottom:12px; border-bottom:1px solid #ddd; padding-bottom:5px; font-size:0.85rem"><b>Q: ${d.q}</b><br>Rép: ${d.stu} ${d.stat}<br><span style="color:green">Correct: ${d.correct}</span></div>`).join('');
     document.getElementById('detail-modal').classList.remove('hidden');
 }
 function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
 function toggleSelectAll() { document.querySelectorAll('.log-cb').forEach(c => c.checked = document.getElementById('select-all').checked); }
-function deleteSelection() { if(confirm("Supprimer la sélection ?")) { let l = JSON.parse(localStorage.getItem('examLogs') || '[]'); Array.from(document.querySelectorAll('.log-cb:checked')).map(c => parseInt(c.dataset.idx)).sort((a,b)=>b-a).forEach(i => l.splice(i,1)); localStorage.setItem('examLogs', JSON.stringify(l)); refreshTable(); } }
+function deleteSelection() { if(confirm("Supprimer ?")) { let l = JSON.parse(localStorage.getItem('examLogs') || '[]'); Array.from(document.querySelectorAll('.log-cb:checked')).map(c => parseInt(c.dataset.idx)).sort((a,b)=>b-a).forEach(i => l.splice(i,1)); localStorage.setItem('examLogs', JSON.stringify(l)); refreshTable(); } }
 function exportToExcel() {
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
     const data = Array.from(document.querySelectorAll('.log-cb:checked')).map(c => { const log = logs[parseInt(c.dataset.idx)]; return { Classe: log.class, Nom: log.lname, Prénom: log.fname, Score: log.score, Date: log.date }; });
@@ -359,7 +319,6 @@ function exportToExcel() {
     const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Résultats"); XLSX.writeFile(wb, "HubSpot_Results.xlsx");
 }
-
 window.onload = applyLang;
 </script>
 </body>
