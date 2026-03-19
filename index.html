@@ -12,23 +12,20 @@
             -webkit-user-select: none; user-select: none; 
         }
         .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; position: relative;}
-        .hidden { display: none !important; } /* Le !important garantit qu'il reste caché */
+        .hidden { display: none !important; }
         h1 { color: var(--hs-orange); font-size: 1.8rem; margin-bottom: 10px; }
         .form-group { text-align: left; margin-bottom: 15px; width: 90%; margin: 0 auto 15px auto; }
         label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.85rem; }
-        input { padding: 12px; width: 100%; border: 1px solid var(--hs-border); border-radius: 4px; font-size: 1rem; box-sizing: border-box; }
-        button { background: var(--hs-orange); color: white; border: none; padding: 14px 28px; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-top: 10px; width: 100%; transition: 0.3s; font-weight: bold; }
+        input { padding: 12px; width: 100%; border: 1px solid var(--hs-border); border-radius: 4px; font-size: 1rem; box-sizing: border-box; background: white; color: var(--hs-dark); }
+        button { background: var(--hs-orange); color: white; border: none; padding: 14px 28px; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-top: 10px; width: 100%; transition: 0.3s; font-weight: bold; display: block; }
         button:hover { background: #ff5c35; }
         .option-btn { display: block; width: 100%; text-align: left; background: white; border: 2px solid var(--hs-light); color: var(--hs-dark); margin-bottom: 10px; padding: 15px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; }
         .option-btn:hover { border-color: var(--hs-orange); background: #fffaf9; }
         #timer { font-weight: bold; color: #e74c3c; font-size: 1.5rem; margin-bottom: 1rem; }
-        
-        /* Admin Styles */
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85rem; }
         .admin-table th, .admin-table td { border: 1px solid #eee; padding: 10px; text-align: left; cursor: pointer; }
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .modal-content { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; text-align: left; color: #33475b; }
-        .close-modal-btn { background: #7c98b6; margin-top: 20px; }
         .status-pill { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
         .pass { background: #d4edda; color: #155724; }
         .fail { background: #f8d7da; color: #721c24; }
@@ -40,11 +37,11 @@
 <div class="container">
     <div id="login-screen">
         <h1>Devinci Exam Portal</h1>
-        <div class="form-group"><label>First Name</label><input type="text" id="fname" autocomplete="off"></div>
-        <div class="form-group"><label>Last Name</label><input type="text" id="lname" autocomplete="off"></div>
-        <div class="form-group"><label>Email (@edu.devinci.fr)</label><input type="email" id="email" autocomplete="off"></div>
-        <div class="form-group"><label>Password</label><input type="password" id="quiz-pw-input"></div>
-        <button onclick="checkAccess()">Start Final Exam</button>
+        <div class="form-group"><label>First Name</label><input type="text" id="fname" placeholder="Ex: Jean"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" id="lname" placeholder="Ex: Dupont"></div>
+        <div class="form-group"><label>Email (@edu.devinci.fr)</label><input type="email" id="email" placeholder="jean.dupont@edu.devinci.fr"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="quiz-pw-input" placeholder="Password du test"></div>
+        <button type="button" onclick="checkAccess()">Start Final Exam</button>
         <a class="admin-link" onclick="showAdmin()">Access Admin Panel</a>
     </div>
 
@@ -58,23 +55,204 @@
     <div id="result-screen" class="hidden">
         <h1>Exam Completed</h1>
         <div id="result-details" style="margin: 20px 0;"></div>
-        <p>Your results have been securely recorded. Thank you.</p>
+        <p>Your results have been recorded. Thank you.</p>
     </div>
 
     <div id="admin-screen" class="hidden">
-        <h1>Student Gradebook</h1>
+        <h1>Gradebook</h1>
         <div id="admin-auth">
             <input type="password" id="admin-pw" placeholder="Admin Secret">
             <button onclick="loginAdmin()">Login</button>
         </div>
         <div id="admin-content" class="hidden">
             <table class="admin-table">
-                <thead><tr><th>Name</th><th>Email</th><th>Score</th><th>Status</th></tr></thead>
+                <thead><tr><th>Name</th><th>Email</th><th>Score</th></tr></thead>
                 <tbody id="log-body"></tbody>
             </table>
-            <button onclick="location.reload()" style="background:#7c98b6">Back to Login</button>
+            <button onclick="location.reload()" style="background:#7c98b6">Back</button>
         </div>
     </div>
 </div>
 
-<div id="detail
+<div id="detail-modal" class="modal hidden">
+    <div class="modal-content">
+        <h2 id="modal-user"></h2>
+        <div id="modal-details"></div>
+        <button style="background:#7c98b6" onclick="closeModal()">Close Details</button>
+    </div>
+</div>
+
+<script>
+const DOMAIN = "@edu.devinci.fr";
+const ADMIN_PW = "supermatou";
+const QUIZ_PW = "hubspot30";
+
+const questionsData = [
+    { q: "What is the buyer's journey?", options: ["Process after purchase", "Learning about brand", "Active research process leading to purchase", "Inbound methodology perspective"], correct: 3 },
+    { q: "Focused on solutions to buyer persona's problem, where does content fit?", options: ["Awareness", "Consideration", "Decision", "All of the above"], correct: 2 },
+    { q: "Which departments should be involved in creating content?", options: ["All departments", "Just marketing", "Just marketing and sales", "All customer-facing departments"], correct: 1 },
+    { q: "True or false? Most buyers research before meeting a salesperson.", options: ["True", "False"], correct: 1 },
+    { q: "True or false? A customer's buying journey is ever-evolving.", options: ["True", "False"], correct: 1 },
+    { q: "Your __________ is your strongest acquisition lever.", options: ["content library", "current customer base", "inbound tool stack", "sales-qualified leads"], correct: 2 },
+    { q: "What does CRM stand for?", options: ["Custom Rendering", "Relationship Modules", "Customer Relationship Management", "Rotation Model"], correct: 3 },
+    { q: "What are the stages in the inbound methodology?", options: ["Get Found, Convert", "Attract, Engage, Close", "Attract, Engage, Delight", "Attract, Convert, Close"], correct: 3 },
+    { q: "True or false? Attracting is marketing, Engaging is sales, Delighting is services.", options: ["True", "False"], correct: 2 },
+    { q: "When does the engage stage begin?", options: ["Purchase occurs", "Customer leaves", "Prospect/customer takes a desired action", "Discount proposal"], correct: 3 },
+    { q: "Purpose of the delight stage?", options: ["Exceed expectations", "Outstanding experience", "Ensure goal accomplishment", "All of the above"], correct: 4 },
+    { q: "True or false? As buying behavior changes, inbound philosophy evolves.", options: ["True", "False"], correct: 1 },
+    { q: "Who is responsible for delighting prospects and customers?", options: ["Services", "Marketing/Services", "Sales/Services", "Marketing, Sales, and Services"], correct: 4 },
+    { q: "The inbound methodology is a circle. What does it represent?", options: ["funnel", "obelisk", "flywheel", "cyclone"], correct: 3 },
+    { q: "True or false? Best practice to gate content over live chat.", options: ["True", "False"], correct: 2 },
+    { q: "Which is NOT true about a flywheel?", options: ["Store momentum", "Circular process", "Stand unsupported indefinitely", "Accelerate with energy"], correct: 3 },
+    { q: "True or false? Every customer must have a fantastic experience to accelerate flywheel.", options: ["True - Even 1 bad experience scares others", "True - Flawless is mandatory", "False - Flywheel counteracts via total base size", "False - Flywheel encourages best experience possible"], correct: 4 },
+    { q: "How to apply flywheel thinking to budget?", options: ["Invest in happiness as much as acquisition", "Even distribution", "No marketing budget", "Funding discounts"], correct: 1 },
+    { q: "Most important source of new prospects in a flywheel?", options: ["Marketing", "Sales", "Advertisements", "Word-of-mouth"], correct: 4 },
+    { q: "Relationship of funnels and flywheels?", options: ["Replaces", "Same premise", "Individual funnels interconnected in flywheel", "First step"], correct: 3 },
+    { q: "How does flywheel foster collaboration?", options: ["Understand how separate funnels fit together", "Impossible to apply", "Funnels cause friction", "Replaces org chart"], correct: 1 },
+    { q: "Relationship between inbound and flywheel?", options: ["Arrows show direction", "Inbound is round to visualize flywheel", "Only way to operate", "Inbound is a funnel in flywheel"], correct: 2 },
+    { q: "True or false? Every business exists primarily to create profits.", options: ["True - Focus first", "True - For employees", "False - Profits are a result, not purpose", "False - Only for charity"], correct: 3 },
+    { q: "Best way to align employees around a purpose?", options: ["Focus on profits", "Using Jobs Theory", "High bonuses", "Competitive environment"], correct: 2 },
+    { q: "Which is NOT a key part of culture?", options: ["Shared values", "Mission statement", "Office floor plan", "Beliefs"], correct: 3 },
+    { q: "What is Jobs Theory?", options: ["HR management", "Framework for customer needs", "Hiring method", "Task automation"], correct: 2 },
+    { q: "Jobs Theory timeline starts where?", options: ["Purchase", "First thought of need", "Talking to sales", "After use"], correct: 2 },
+    { q: "Example of a job story?", options: ["Product is best", "When hungry, I want a snack...", "Buy 1 get 1", "30-year-old male"], correct: 2 },
+    { q: "Which is NOT a 'job dimension'?", options: ["Functional", "Emotional", "Social", "Geographic"], correct: 4 },
+    { q: "How does purpose affect 'back office' teams?", options: ["No effect", "Helps prioritize tasks", "Only for sales", "Reduces workload"], correct: 2 },
+    { q: "What describes a buyer persona?", options: ["Individual prospect", "Semi-fictional representation", "Demographic list", "Sentiment analysis"], correct: 2 },
+    { q: "Who benefits most from personas?", options: ["Marketing only", "Sales only", "All customer-facing teams", "Leadership only"], correct: 3 },
+    { q: "Who should be involved in creating personas?", options: ["Marketing", "Services", "Leadership", "Anybody interacting with customers"], correct: 4 },
+    { q: "Role of 'back office' in personas?", options: ["Not involved", "Offer key insights", "Own process", "Accept finished"], correct: 2 },
+    { q: "True or false? One person should maintain personas.", options: ["True - Accountability", "True - Avoid inconsistency", "False - Too biased", "False - Unmanaged"], correct: 1 },
+    { q: "Relationship between purpose and personas?", options: ["Purpose defines personas", "Personas define purpose", "Same thing", "No relationship"], correct: 1 },
+    { q: "Marketing needs in a persona?", options: ["Lead quality", "Communication channels", "Buying power", "Feedback"], correct: 2 },
+    { q: "Sales needs in a persona?", options: ["Campaign ideas", "Qualification criteria", "Brand loyalty", "Social habits"], correct: 2 },
+    { q: "Customer service needs in a persona?", options: ["Sales targets", "Common roadblocks", "Lead source", "Ads preferences"], correct: 2 },
+    { q: "If person doesn't match persona, what to do?", options: ["Stop talking", "Force match", "Trust individual over persona", "Change persona"], correct: 3 },
+    { q: "What are Key Results?", options: ["Broad goals", "Quantitative benchmarks", "Names", "Deadlines"], correct: 2 },
+    { q: "Objectives vs Key Results?", options: ["Objectives short-lived", "KR long-lived", "Objectives 'what', KR 'how'", "No difference"], correct: 3 },
+    { q: "What is three horizon framework?", options: ["Past/Present", "Short/Med/Long growth", "Sales/Marketing/Service", "Tactics/Ops"], correct: 2 },
+    { q: "Horizon one symbolizes?", options: ["Innovation", "High-growth", "Core business/Profit", "Future"], correct: 3 },
+    { q: "Horizon three symbolizes?", options: ["Daily ops", "Scaling ideas", "Radical innovation", "Decreasing revenue"], correct: 3 },
+    { q: "True or false? Reallocate if one horizon underperforms.", options: ["True", "False"], correct: 2 },
+    { q: "Max number of top priorities?", options: ["1", "3", "5", "10"], correct: 2 },
+    { q: "Attract people by using _________ for content.", options: ["Database", "Leaders", "Your expertise", "Sales knowledge"], correct: 3 },
+    { q: "Engage stage - what to collect?", options: ["Goals", "First name", "Information", "Email"], correct: 3 },
+    { q: "Service team use of buyer's journey?", options: ["Cross-sell", "Up-sell", "Resell", "All of the above"], correct: 4 },
+    { q: "Relationship profits/purpose?", options: ["Purpose generates", "Profits enable purpose", "Profits distract", "Purpose drives"], correct: 2 },
+    { q: "Advice for 'Job to be Done'?", options: ["Guess", "Wait for 100", "Interview first few", "Ask competitors"], correct: 3 },
+    { q: "Why customer happiness matters?", options: ["Word-of-mouth", "Prevent negative", "Repeat business", "All of the above"], correct: 4 },
+    { q: "True or false? Don't think of sales as funnel with flywheel.", options: ["True", "False"], correct: 2 },
+    { q: "Flywheel improves handoff how?", options: ["Merge teams", "Visibility in steps", "Sales post-sale", "Granular reporting"], correct: 2 },
+    { q: "Principles of inbound?", options: ["Personalize/Empathize", "Energize/Synergize", "Analyze/Capitalize", "Categorize"], correct: 1 },
+    { q: "Attract stage focus?", options: ["Trusted advisor", "Helpful content", "Immediate value", "Exceeding expectations"], correct: 2 },
+    { q: "Percentage stopping comms due to irrelevant messages?", options: ["94%", "74%", "77%", "85%"], correct: 1 },
+    { q: "Percentage never returning after 1 bad experience?", options: ["61%", "46%", "51%", "34%"], correct: 3 },
+    { q: "To build trust, align with how they _________.", options: ["think/research/purchase", "work/live/play", "talk/act", "pay/save"], correct: 1 }
+];
+
+let userSession = {};
+let questions = [];
+let currentIndex = 0, score = 0, timer;
+let detailedResults = [];
+
+function checkAccess() {
+    const fn = document.getElementById('fname').value.trim();
+    const ln = document.getElementById('lname').value.trim();
+    const mail = document.getElementById('email').value.trim().toLowerCase();
+    const pw = document.getElementById('quiz-pw-input').value;
+
+    if(!fn || !ln || !mail || !pw) { alert("Tous les champs sont obligatoires."); return; }
+    if(!mail.endsWith(DOMAIN)) { alert("Email invalide. Utilisez votre adresse @edu.devinci.fr"); return; }
+    if(pw !== QUIZ_PW) { alert("Mot de passe du quiz incorrect."); return; }
+    if(localStorage.getItem(`done_${mail}`)) { alert("Vous avez déjà soumis ce test."); return; }
+
+    userSession = { fname: fn, lname: ln, email: mail };
+    startQuiz();
+}
+
+function startQuiz() {
+    questions = JSON.parse(JSON.stringify(questionsData));
+    questions.forEach(q => {
+        q.correctTxt = q.options[q.correct-1];
+        q.options.sort(() => Math.random() - 0.5);
+    });
+    questions.sort(() => Math.random() - 0.5);
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    showQuestion();
+}
+
+function showQuestion() {
+    if(currentIndex >= questions.length) return finishQuiz();
+    let timeLeft = 60;
+    document.getElementById('timer').innerText = timeLeft + "s";
+    clearInterval(timer);
+    timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').innerText = timeLeft + "s";
+        if(timeLeft <= 0) handleAnswer("TIMEOUT");
+    }, 1000);
+    const q = questions[currentIndex];
+    document.getElementById('q-current').innerText = currentIndex + 1;
+    document.getElementById('question-text').innerText = q.q;
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    q.options.forEach(opt => {
+        const b = document.createElement('button');
+        b.className = 'option-btn';
+        b.innerText = opt;
+        b.onclick = () => handleAnswer(opt);
+        container.appendChild(b);
+    });
+}
+
+function handleAnswer(ans) {
+    const q = questions[currentIndex];
+    const isCorrect = (ans === q.correctTxt);
+    if(isCorrect) score++;
+    detailedResults.push({ q: q.q, studentAns: ans, correctAns: q.correctTxt, status: isCorrect ? '✅' : '❌' });
+    currentIndex++;
+    showQuestion();
+}
+
+function finishQuiz() {
+    clearInterval(timer);
+    const finalScore = Math.round((score/questions.length)*100);
+    const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
+    logs.push({ ...userSession, score: score, percent: finalScore, details: detailedResults, date: new Date().toLocaleString() });
+    localStorage.setItem('examLogs', JSON.stringify(logs));
+    localStorage.setItem(`done_${userSession.email}`, 'true');
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    document.getElementById('result-details').innerHTML = `<h3>Score: ${score} / 60 (${finalScore}%)</h3>`;
+}
+
+function showAdmin() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('admin-screen').classList.remove('hidden'); }
+function loginAdmin() {
+    if(document.getElementById('admin-pw').value === ADMIN_PW) {
+        document.getElementById('admin-auth').classList.add('hidden');
+        document.getElementById('admin-content').classList.remove('hidden');
+        renderLogs();
+    } else { alert("Accès refusé."); }
+}
+function renderLogs() {
+    const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
+    logs.sort((a, b) => a.lname.localeCompare(b.lname));
+    const body = document.getElementById('log-body');
+    body.innerHTML = '';
+    logs.forEach(log => {
+        const tr = document.createElement('tr');
+        tr.onclick = () => showDetails(log);
+        tr.innerHTML = `<td>${log.lname.toUpperCase()} ${log.fname}</td><td>${log.email}</td><td>${log.percent}%</td>`;
+        body.appendChild(tr);
+    });
+}
+function showDetails(log) {
+    document.getElementById('modal-user').innerText = log.fname + " " + log.lname;
+    document.getElementById('modal-details').innerHTML = log.details.map(d => `<p style="border-bottom:1px solid #eee; font-size:0.8rem"><strong>${d.q}</strong><br>Réponse: ${d.studentAns} ${d.status}</p>`).join('');
+    document.getElementById('detail-modal').classList.remove('hidden');
+}
+function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
+</script>
+</body>
+</html>
