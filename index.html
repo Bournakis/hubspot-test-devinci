@@ -25,7 +25,7 @@
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; position: relative; }
         
-        /* TOGGLE THEME PETIT EN HAUT A DROITE */
+        /* HEADER TOOLS */
         .header-tools { position: absolute; top: 10px; right: 10px; z-index: 10; }
         .theme-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 10px; border-radius: 15px; cursor: pointer; font-size: 0.75rem; font-weight: 600; opacity: 0.7; transition: opacity 0.2s; }
         .theme-btn:hover { opacity: 1; }
@@ -41,16 +41,29 @@
         
         button.primary { background: var(--hs-orange); color: white; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.2rem; width: 100%; margin: 15px 0; }
         
+        /* QUIZ ELEMENTS */
         #timer { font-size: 2.8rem; color: #ff4444; font-weight: 800; margin-bottom: 15px; }
-        
         .option-btn { display: block; width: 100%; text-align: left; background: var(--btn-opt-bg); border: 2px solid var(--border-color); color: var(--text-color) !important; margin-bottom: 15px; padding: 20px; border-radius: 12px; cursor: pointer; font-size: 1.25rem; line-height: 1.4; }
         
         .hidden { display: none !important; }
         
+        /* GHOST ADMIN */
         #ghost-admin { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); font-size: 0.6rem; color: var(--admin-ghost); cursor: pointer; user-select: none; }
 
+        /* ADMIN STYLE */
         .admin-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 20px; }
         .admin-table th, .admin-table td { border: 1px solid var(--border-color); padding: 8px; text-align: left; }
+        
+        /* TOGGLE SWITCH LANGUE */
+        .lang-switch-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; padding: 10px; background: var(--btn-opt-bg); border-radius: 10px; }
+        .switch { position: relative; display: inline-block; width: 60px; height: 30px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd6e2; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--hs-orange); }
+        input:checked + .slider:before { transform: translateX(30px); }
+        .lang-label { font-weight: bold; font-size: 0.9rem; color: var(--text-color); }
+
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
     </style>
@@ -93,22 +106,24 @@
             <button class="primary" onclick="loginAdmin()">Entrer</button>
         </div>
         <div id="admin-content" class="hidden">
-            <div class="form-group">
-                <label>🌍 Langue / Language</label>
-                <select id="lang-selector" onchange="changeLang(this.value)" style="width:100%; padding:10px; border-radius:8px;">
-                    <option value="fr">Français</option>
-                    <option value="en">English</option>
-                </select>
+            <div class="lang-switch-container">
+                <span class="lang-label">FR</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-toggle" onclick="toggleLanguage()">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">EN</span>
             </div>
+
             <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button onclick="exportToExcel()" style="flex:1; background:#27ae60; color:white; border:none; padding:10px; border-radius:8px;">Excel</button>
-                <button onclick="deleteSelection()" style="flex:1; background:#e74c3c; color:white; border:none; padding:10px; border-radius:8px;">Supprimer</button>
+                <button onclick="exportToExcel()" style="flex:1; background:#27ae60; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">Excel</button>
+                <button onclick="deleteSelection()" style="flex:1; background:#e74c3c; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">Supprimer</button>
             </div>
             <table class="admin-table">
                 <thead><tr><th><input type="checkbox" onclick="toggleSelectAll()"></th><th>Classe</th><th>Nom</th><th>Score</th></tr></thead>
                 <tbody id="log-body"></tbody>
             </table>
-            <button onclick="location.reload()" style="background:gray; color:white; border:none; padding:12px; width:100%; margin-top:15px; border-radius:8px;">Quitter</button>
+            <button onclick="location.reload()" style="background:gray; color:white; border:none; padding:12px; width:100%; margin-top:15px; border-radius:8px; cursor:pointer;">Quitter</button>
         </div>
     </div>
 </div>
@@ -137,6 +152,7 @@ const translations = {
     }
 };
 
+// ... (Le tableau questionsData reste inchangé) ...
 const questionsData = [
     { q: "What is the buyer's journey?", options: ["The process a customer goes through after they've purchased a product", "The process a customer goes through as they learn about your brand", "The active research process a someone goes through leading up to a purchase", "The inbound methodology from a customer's perspective"], correct: 3 },
     { q: "If you're creating content focused on solutions to your buyer persona's problem, where does that content fit into the buyer's journey?", options: ["Awareness", "Consideration", "Decision", "All of the above"], correct: 2 },
@@ -232,9 +248,15 @@ function applyLang() {
     document.getElementById('lname').placeholder = t.phLname;
     document.getElementById('email').placeholder = t.phEmail;
     document.getElementById('quiz-pw-input').placeholder = t.phPw;
+    // Mise à jour du toggle visuel
+    document.getElementById('lang-toggle').checked = (curLang === 'en');
 }
 
-function changeLang(l) { curLang = l; localStorage.setItem('siteLang', l); applyLang(); }
+function toggleLanguage() {
+    curLang = document.getElementById('lang-toggle').checked ? 'en' : 'fr';
+    localStorage.setItem('siteLang', curLang);
+    applyLang();
+}
 
 function checkAccess() {
     const cls = document.getElementById('class-id').value.trim().toUpperCase();
