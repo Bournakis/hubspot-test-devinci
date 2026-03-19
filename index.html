@@ -3,221 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HubSpot Exam - Devinci</title>
+    <title>HubSpot Exam - Devinci Management</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
     <style>
         :root { --hs-orange: #ff7a59; --hs-dark: #33475b; --hs-light: #f5f8fa; --hs-border: #cbd6e2; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--hs-light); color: var(--hs-dark); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; user-select: none; }
-        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 900px; text-align: center; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 900px; text-align: center; position: relative;}
         .hidden { display: none !important; }
-        h1 { color: var(--hs-orange); }
-        .form-group { text-align: left; margin-bottom: 15px; width: 90%; margin: 0 auto 15px auto; }
+        h1 { color: var(--hs-orange); margin-bottom: 20px; }
+        .form-group { text-align: left; margin-bottom: 12px; width: 90%; margin-left: auto; margin-right: auto; }
         label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.85rem; }
-        input, select { padding: 12px; width: 100%; border: 1px solid var(--hs-border); border-radius: 4px; box-sizing: border-box; }
-        button { background: var(--hs-orange); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px 0; }
-        button:hover { background: #ff5c35; }
-        .admin-link { display: block; margin-top: 20px; font-size: 0.8rem; color: #7c98b6; cursor: pointer; }
+        input { padding: 12px; width: 100%; border: 1px solid var(--hs-border); border-radius: 4px; box-sizing: border-box; }
         
-        /* Quiz & Table Styles */
-        .option-btn { display: block; width: 100%; text-align: left; background: white; border: 1px solid #ddd; margin-bottom: 8px; padding: 12px; border-radius: 6px; cursor: pointer; }
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.8rem; }
-        .admin-table th, .admin-table td { border: 1px solid #eee; padding: 8px; text-align: left; }
-        .admin-table tr:hover { background: #fdfdfd; }
-        .toolbar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; background: #eee; padding: 10px; border-radius: 5px; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 999; }
-        .modal-content { background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; text-align: left; }
+        button { background: var(--hs-orange); color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px; }
+        button:hover { background: #ff5c35; }
+        .btn-admin { background: #7c98b6; font-size: 0.8rem; }
+        
+        /* Admin Table & Toolbar */
+        .toolbar { background: #f0f4f7; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: white; }
+        .admin-table th, .admin-table td { border: 1px solid #eee; padding: 10px; text-align: left; }
+        .admin-table th { background: #f8fafd; }
+        .row-select { cursor: pointer; color: #2980b9; font-weight: bold; }
+        
+        /* Modal */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; text-align: left; }
+        
+        #timer { font-size: 1.5rem; color: #e74c3c; font-weight: bold; margin-bottom: 10px; }
+        .option-btn { display: block; width: 100%; text-align: left; background: white; border: 1px solid #ddd; margin-bottom: 10px; padding: 15px; border-radius: 6px; cursor: pointer; }
+        .option-btn:hover { border-color: var(--hs-orange); background: #fffaf9; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="login-screen">
-        <h1>Devinci Inbound Exam</h1>
-        <div class="form-group"><label>Class (ex: A3-MKT)</label><input type="text" id="class-name" placeholder="Nom de la classe"></div>
+        <h1>HubSpot Certification</h1>
+        <div class="form-group"><label>Class Name (ex: A3-MKT-A)</label><input type="text" id="class-id" placeholder="Ex: A3-DIGITAL"></div>
         <div class="form-group"><label>First Name</label><input type="text" id="fname"></div>
         <div class="form-group"><label>Last Name</label><input type="text" id="lname"></div>
         <div class="form-group"><label>Email (@edu.devinci.fr)</label><input type="email" id="email"></div>
-        <div class="form-group"><label>Password</label><input type="password" id="quiz-pw-input"></div>
-        <button onclick="checkAccess()" style="width:100%">Start Exam</button>
-        <span class="admin-link" onclick="showAdmin()">Admin Access</span>
+        <div class="form-group"><label>Access Password</label><input type="password" id="quiz-pw-input"></div>
+        <button onclick="checkAccess()" style="width: 90%; margin-top: 15px;">Start Final Exam</button>
+        <p style="margin-top:20px;"><a href="#" onclick="showAdmin()" style="color:#7c98b6; font-size:0.8rem; text-decoration:none;">Administration Panel</a></p>
     </div>
 
     <div id="quiz-screen" class="hidden">
-        <div id="timer" style="font-size: 1.5rem; color: red; font-weight: bold;">60s</div>
-        <p>Question <span id="q-current">1</span>/60</p>
-        <h2 id="question-text"></h2>
+        <div id="timer">60s</div>
+        <div style="font-size: 0.9rem; margin-bottom: 10px;">Question <span id="q-current">1</span> / 60</div>
+        <h2 id="question-text" style="font-size: 1.1rem; margin-bottom: 20px;"></h2>
         <div id="options-container"></div>
     </div>
 
     <div id="result-screen" class="hidden">
-        <h1>Terminé !</h1>
-        <div id="result-details"></div>
-        <p>Vos résultats ont été enregistrés localement.</p>
+        <h1>Exam Completed</h1>
+        <div id="final-score-display" style="font-size: 2rem; margin: 30px 0;"></div>
+        <p>Your results have been securely saved for your instructor.</p>
     </div>
 
     <div id="admin-screen" class="hidden">
-        <h1>Gestionnaire des Scores</h1>
+        <h1>Admin Dashboard</h1>
         <div id="admin-auth">
-            <input type="password" id="admin-pw" placeholder="Admin Secret">
-            <button onclick="loginAdmin()">Login</button>
+            <input type="password" id="admin-pw" placeholder="Admin Secret Code" style="width:200px; margin-bottom:10px;"><br>
+            <button onclick="loginAdmin()">Login to Logs</button>
         </div>
+        
         <div id="admin-content" class="hidden">
             <div class="toolbar">
-                <button onclick="exportExcel()" style="background:#27ae60">Exporter Sélection (Excel)</button>
-                <button onclick="emailSelection()" style="background:#2980b9">Email Sélection</button>
-                <button onclick="renameClass()" style="background:#f39c12">Renommer Classe</button>
-                <button onclick="deleteSelection()" style="background:#e74c3c">Supprimer Sélection</button>
+                <button onclick="exportToExcel()" style="background:#27ae60">📊 Export Selection (Excel)</button>
+                <button onclick="emailLogs()" style="background:#2980b9">📧 Email Selection</button>
+                <button onclick="bulkRenameClass()" style="background:#f39c12">✏️ Rename Class</button>
+                <button onclick="deleteSelection()" style="background:#e74c3c">🗑️ Delete Selection</button>
             </div>
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" onclick="toggleAll(this)"></th>
-                        <th>Classe</th>
-                        <th>Nom</th>
+                        <th><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
+                        <th>Class</th>
+                        <th>Student Name</th>
                         <th>Email</th>
                         <th>Score</th>
                     </tr>
                 </thead>
                 <tbody id="log-body"></tbody>
             </table>
-            <button onclick="location.reload()" style="background:#7c98b6; margin-top:20px">Retour</button>
+            <button onclick="location.reload()" class="btn-admin" style="margin-top:20px;">Logout / Back</button>
         </div>
     </div>
 </div>
 
 <div id="detail-modal" class="modal hidden">
     <div class="modal-content">
-        <h2 id="modal-user"></h2>
-        <div id="modal-details"></div>
-        <button onclick="closeModal()">Fermer</button>
+        <h2 id="modal-title"></h2>
+        <div id="modal-body" style="font-size: 0.8rem;"></div>
+        <button onclick="closeModal()" style="background:#7c98b6; margin-top:20px;">Close Details</button>
     </div>
 </div>
 
 <script>
-const ADMIN_PW = "supermatou";
+// CONFIG
+const ADMIN_CODE = "supermatou";
 const QUIZ_PW = "hubspot30";
-// Les 60 questions (abrégées ici pour le code, garde ta liste complète)
+const DOMAIN = "@edu.devinci.fr";
+
+// QUESTIONS DATABASE (Reduced for sample, put your full list here)
 const questionsData = [
     { q: "What is the buyer's journey?", options: ["Process after purchase", "Learning about brand", "Active research process leading to purchase", "Inbound methodology perspective"], correct: 3 },
     { q: "Focused on solutions to buyer persona's problem, where does content fit?", options: ["Awareness", "Consideration", "Decision", "All of the above"], correct: 2 },
-    // ... (Ajoute toutes tes questions ici comme avant)
+    // ... AJOUTEZ LE RESTE DES 60 QUESTIONS ICI
 ];
 
-let userSession = {};
-let questions = [];
-let currentIndex = 0, score = 0, timer;
-let detailedResults = [];
+let currentStudent = {};
+let examQuestions = [];
+let currentIndex = 0, score = 0, timerObj;
+let answersLog = [];
 
 function checkAccess() {
-    const cls = document.getElementById('class-name').value.trim().toUpperCase();
+    const cls = document.getElementById('class-id').value.trim().toUpperCase();
     const fn = document.getElementById('fname').value.trim();
     const ln = document.getElementById('lname').value.trim();
     const mail = document.getElementById('email').value.trim().toLowerCase();
     const pw = document.getElementById('quiz-pw-input').value;
 
-    if(!cls || !fn || !ln || !mail || pw !== QUIZ_PW) return alert("Erreur dans les champs ou mot de passe.");
-    if(!mail.endsWith("@edu.devinci.fr")) return alert("Email Devinci requis.");
-    if(localStorage.getItem(`done_${mail}`)) return alert("Test déjà effectué.");
+    if(!cls || !fn || !ln || !mail || !pw) return alert("All fields are required.");
+    if(!mail.endsWith(DOMAIN)) return alert("Access restricted to @edu.devinci.fr emails.");
+    if(pw !== QUIZ_PW) return alert("Wrong exam password.");
+    if(localStorage.getItem('done_' + mail)) return alert("You have already submitted this exam.");
 
-    userSession = { class: cls, fname: fn, lname: ln, email: mail };
-    startQuiz();
+    currentStudent = { class: cls, fname: fn, lname: ln, email: mail };
+    startExam();
 }
 
-function startQuiz() {
-    questions = [...questionsData].sort(() => Math.random() - 0.5);
+function startExam() {
+    examQuestions = JSON.parse(JSON.stringify(questionsData));
+    examQuestions.forEach(q => {
+        q.correctTxt = q.options[q.correct-1];
+        q.options.sort(() => Math.random() - 0.5);
+    });
+    examQuestions.sort(() => Math.random() - 0.5);
+    
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('quiz-screen').classList.remove('hidden');
     showQuestion();
 }
 
 function showQuestion() {
-    if(currentIndex >= questions.length) return finishQuiz();
+    if(currentIndex >= examQuestions.length) return finishExam();
+    
     let timeLeft = 60;
     document.getElementById('timer').innerText = timeLeft + "s";
-    clearInterval(timer);
-    timer = setInterval(() => {
+    clearInterval(timerObj);
+    timerObj = setInterval(() => {
         timeLeft--;
         document.getElementById('timer').innerText = timeLeft + "s";
         if(timeLeft <= 0) handleAnswer("TIMEOUT");
     }, 1000);
 
-    const q = questions[currentIndex];
+    const q = examQuestions[currentIndex];
     document.getElementById('q-current').innerText = currentIndex + 1;
     document.getElementById('question-text').innerText = q.q;
     const container = document.getElementById('options-container');
     container.innerHTML = '';
+    
     q.options.forEach(opt => {
-        const b = document.createElement('button');
-        b.className = 'option-btn';
-        b.innerText = opt;
-        b.onclick = () => handleAnswer(opt);
-        container.appendChild(b);
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => handleAnswer(opt);
+        container.appendChild(btn);
     });
 }
 
 function handleAnswer(ans) {
-    const q = questions[currentIndex];
-    const correctTxt = q.options[q.correct-1];
-    const isCorrect = (ans === correctTxt);
+    const q = examQuestions[currentIndex];
+    const isCorrect = (ans === q.correctTxt);
     if(isCorrect) score++;
-    detailedResults.push({ q: q.q, student: ans, correct: correctTxt, status: isCorrect ? '✅' : '❌' });
+    
+    answersLog.push({ q: q.q, studentAns: ans, correctAns: q.correctTxt, status: isCorrect ? '✅' : '❌' });
     currentIndex++;
     showQuestion();
 }
 
-function finishQuiz() {
-    clearInterval(timer);
+function finishExam() {
+    clearInterval(timerObj);
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    logs.push({ ...userSession, score: score, details: detailedResults, date: new Date().toLocaleString() });
+    logs.push({ ...currentStudent, score: score, details: answersLog, date: new Date().toLocaleString() });
     localStorage.setItem('examLogs', JSON.stringify(logs));
-    localStorage.setItem(`done_${userSession.email}`, 'true');
+    localStorage.setItem('done_' + currentStudent.email, 'true');
+
     document.getElementById('quiz-screen').classList.add('hidden');
     document.getElementById('result-screen').classList.remove('hidden');
-    document.getElementById('result-details').innerHTML = `<h2>Score: ${score}/60</h2>`;
+    document.getElementById('final-score-display').innerText = score + " / 60";
 }
 
-// --- ADMIN ---
-function showAdmin() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('admin-screen').classList.remove('hidden'); }
-function loginAdmin() { if(document.getElementById('admin-pw').value === ADMIN_PW) { document.getElementById('admin-auth').classList.add('hidden'); document.getElementById('admin-content').classList.remove('hidden'); renderLogs(); } }
+// ADMIN LOGIC
+function showAdmin() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-screen').classList.remove('hidden');
+}
+
+function loginAdmin() {
+    if(document.getElementById('admin-pw').value === ADMIN_CODE) {
+        document.getElementById('admin-auth').classList.add('hidden');
+        document.getElementById('admin-content').classList.remove('hidden');
+        renderLogs();
+    } else { alert("Wrong admin code."); }
+}
 
 function renderLogs() {
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
+    // Sort by Class, then Name
     logs.sort((a,b) => a.class.localeCompare(b.class) || a.lname.localeCompare(b.lname));
+    
     const body = document.getElementById('log-body');
-    body.innerHTML = logs.map((log, i) => `
-        <tr>
-            <td><input type="checkbox" class="row-check" data-index="${i}"></td>
+    body.innerHTML = '';
+    logs.forEach((log, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="checkbox" class="log-checkbox" data-index="${index}"></td>
             <td>${log.class}</td>
-            <td style="cursor:pointer; color:blue" onclick='viewOne(${i})'>${log.lname.toUpperCase()} ${log.fname}</td>
+            <td class="row-select" onclick="viewDetails(${index})">${log.lname.toUpperCase()} ${log.fname}</td>
             <td>${log.email}</td>
-            <td>${log.score}/60</td>
-        </tr>
-    `).join('');
+            <td><b>${log.score}/60</b></td>
+        `;
+        body.appendChild(tr);
+    });
 }
 
-function viewOne(i) {
-    const log = JSON.parse(localStorage.getItem('examLogs'))[i];
-    document.getElementById('modal-user').innerText = log.fname + " " + log.lname;
-    document.getElementById('modal-details').innerHTML = log.details.map(d => `<p style="font-size:0.7rem"><b>${d.q}</b><br>Rép: ${d.student} ${d.status}</p>`).join('');
+function viewDetails(index) {
+    const log = JSON.parse(localStorage.getItem('examLogs'))[index];
+    document.getElementById('modal-title').innerText = log.fname + " " + log.lname + " (" + log.class + ")";
+    document.getElementById('modal-body').innerHTML = log.details.map(d => `
+        <div style="border-bottom:1px solid #eee; padding:5px;">
+            <b>Q: ${d.q}</b><br>
+            Student: <span style="color:${d.status === '✅' ? 'green' : 'red'}">${d.studentAns}</span><br>
+            Correct: ${d.correctAns} ${d.status}
+        </div>
+    `).join('');
     document.getElementById('detail-modal').classList.remove('hidden');
 }
 
 function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
-function toggleAll(source) { document.querySelectorAll('.row-check').forEach(cb => cb.checked = source.checked); }
+function toggleSelectAll() {
+    const master = document.getElementById('select-all');
+    document.querySelectorAll('.log-checkbox').forEach(cb => cb.checked = master.checked);
+}
 
-function getSelectedIndices() { return Array.from(document.querySelectorAll('.row-check:checked')).map(cb => parseInt(cb.dataset.index)); }
+function getSelectedIndices() {
+    return Array.from(document.querySelectorAll('.log-checkbox:checked')).map(cb => parseInt(cb.dataset.index));
+}
 
 function deleteSelection() {
-    if(!confirm("Supprimer les éléments sélectionnés ?")) return;
+    if(!confirm("Are you sure you want to delete selected records?")) return;
     let logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    const indices = getSelectedIndices().sort((a,b) => b-a);
-    indices.forEach(i => logs.splice(i, 1));
+    const toDelete = getSelectedIndices().sort((a,b) => b - a);
+    toDelete.forEach(i => logs.splice(i, 1));
     localStorage.setItem('examLogs', JSON.stringify(logs));
     renderLogs();
 }
 
-function renameClass() {
-    const newName = prompt("Nouveau nom de classe ?").toUpperCase();
+function bulkRenameClass() {
+    const newName = prompt("Enter new class name for selection:").toUpperCase();
     if(!newName) return;
     let logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
     getSelectedIndices().forEach(i => logs[i].class = newName);
@@ -225,218 +272,35 @@ function renameClass() {
     renderLogs();
 }
 
-function exportExcel() {
+function exportToExcel() {
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    const selected = getSelectedIndices().map(i => ({
-        Classe: logs[i].class,
-        Nom: logs[i].lname,
-        Prenom: logs[i].fname,
+    const selectedData = getSelectedIndices().map(i => ({
+        Class: logs[i].class,
+        LastName: logs[i].lname,
+        FirstName: logs[i].fname,
         Email: logs[i].email,
         Score: logs[i].score,
         Date: logs[i].date
     }));
-    if(selected.length === 0) return alert("Sélectionnez des lignes");
-    const ws = XLSX.utils.json_to_sheet(selected);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Scores");
-    XLSX.writeFile(wb, "Resultats_Exam.xlsx");
+    
+    if(selectedData.length === 0) return alert("Please select students to export.");
+
+    const worksheet = XLSX.utils.json_to_sheet(selectedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Results");
+    XLSX.writeFile(workbook, "HubSpot_Exam_Results.xlsx");
 }
 
-function emailSelection() {
+function emailLogs() {
     const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
     const selected = getSelectedIndices().map(i => logs[i]);
-    if(selected.length === 0) return alert("Sélectionnez des lignes");
+    if(selected.length === 0) return alert("Please select students.");
+
+    let body = "Exam Results Summary:\n\n";
+    selected.forEach(s => body += `[${s.class}] ${s.lname} ${s.fname}: ${s.score}/60\n`);
     
-    let body = "Résultats de l'examen :\n\n";
-    selected.forEach(s => body += `${s.lname} ${s.fname} (${s.class}) : ${s.score}/60\n`);
-    
-    const mailto = `mailto:?subject=Scores Examen HubSpot&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
+    window.location.href = `mailto:?subject=HubSpot Exam Scores&body=${encodeURIComponent(body)}`;
 }
-</script>
-</body>
-</html>    </div>
-</div>
-
-<div id="detail-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2 id="modal-user"></h2>
-        <div id="modal-details"></div>
-        <button style="background:#7c98b6" onclick="closeModal()">Close Details</button>
-    </div>
-</div>
-
-<script>
-const DOMAIN = "@edu.devinci.fr";
-const ADMIN_PW = "supermatou";
-const QUIZ_PW = "hubspot30";
-
-const questionsData = [
-    { q: "What is the buyer's journey?", options: ["Process after purchase", "Learning about brand", "Active research process leading to purchase", "Inbound methodology perspective"], correct: 3 },
-    { q: "Focused on solutions to buyer persona's problem, where does content fit?", options: ["Awareness", "Consideration", "Decision", "All of the above"], correct: 2 },
-    { q: "Which departments should be involved in creating content?", options: ["All departments", "Just marketing", "Just marketing and sales", "All customer-facing departments"], correct: 1 },
-    { q: "True or false? Most buyers research before meeting a salesperson.", options: ["True", "False"], correct: 1 },
-    { q: "True or false? A customer's buying journey is ever-evolving.", options: ["True", "False"], correct: 1 },
-    { q: "Your __________ is your strongest acquisition lever.", options: ["content library", "current customer base", "inbound tool stack", "sales-qualified leads"], correct: 2 },
-    { q: "What does CRM stand for?", options: ["Custom Rendering", "Relationship Modules", "Customer Relationship Management", "Rotation Model"], correct: 3 },
-    { q: "What are the stages in the inbound methodology?", options: ["Get Found, Convert", "Attract, Engage, Close", "Attract, Engage, Delight", "Attract, Convert, Close"], correct: 3 },
-    { q: "True or false? Attracting is marketing, Engaging is sales, Delighting is services.", options: ["True", "False"], correct: 2 },
-    { q: "When does the engage stage begin?", options: ["Purchase occurs", "Customer leaves", "Prospect/customer takes a desired action", "Discount proposal"], correct: 3 },
-    { q: "Purpose of the delight stage?", options: ["Exceed expectations", "Outstanding experience", "Ensure goal accomplishment", "All of the above"], correct: 4 },
-    { q: "True or false? As buying behavior changes, inbound philosophy evolves.", options: ["True", "False"], correct: 1 },
-    { q: "Who is responsible for delighting prospects and customers?", options: ["Services", "Marketing/Services", "Sales/Services", "Marketing, Sales, and Services"], correct: 4 },
-    { q: "The inbound methodology is a circle. What does it represent?", options: ["funnel", "obelisk", "flywheel", "cyclone"], correct: 3 },
-    { q: "True or false? Best practice to gate content over live chat.", options: ["True", "False"], correct: 2 },
-    { q: "Which is NOT true about a flywheel?", options: ["Store momentum", "Circular process", "Stand unsupported indefinitely", "Accelerate with energy"], correct: 3 },
-    { q: "True or false? Every customer must have a fantastic experience to accelerate flywheel.", options: ["True - Even 1 bad experience scares others", "True - Flawless is mandatory", "False - Flywheel counteracts via total base size", "False - Flywheel encourages best experience possible"], correct: 4 },
-    { q: "How to apply flywheel thinking to budget?", options: ["Invest in happiness as much as acquisition", "Even distribution", "No marketing budget", "Funding discounts"], correct: 1 },
-    { q: "Most important source of new prospects in a flywheel?", options: ["Marketing", "Sales", "Advertisements", "Word-of-mouth"], correct: 4 },
-    { q: "Relationship of funnels and flywheels?", options: ["Replaces", "Same premise", "Individual funnels interconnected in flywheel", "First step"], correct: 3 },
-    { q: "How does flywheel foster collaboration?", options: ["Understand how separate funnels fit together", "Impossible to apply", "Funnels cause friction", "Replaces org chart"], correct: 1 },
-    { q: "Relationship between inbound and flywheel?", options: ["Arrows show direction", "Inbound is round to visualize flywheel", "Only way to operate", "Inbound is a funnel in flywheel"], correct: 2 },
-    { q: "True or false? Every business exists primarily to create profits.", options: ["True - Focus first", "True - For employees", "False - Profits are a result, not purpose", "False - Only for charity"], correct: 3 },
-    { q: "Best way to align employees around a purpose?", options: ["Focus on profits", "Using Jobs Theory", "High bonuses", "Competitive environment"], correct: 2 },
-    { q: "Which is NOT a key part of culture?", options: ["Shared values", "Mission statement", "Office floor plan", "Beliefs"], correct: 3 },
-    { q: "What is Jobs Theory?", options: ["HR management", "Framework for customer needs", "Hiring method", "Task automation"], correct: 2 },
-    { q: "Jobs Theory timeline starts where?", options: ["Purchase", "First thought of need", "Talking to sales", "After use"], correct: 2 },
-    { q: "Example of a job story?", options: ["Product is best", "When hungry, I want a snack...", "Buy 1 get 1", "30-year-old male"], correct: 2 },
-    { q: "Which is NOT a 'job dimension'?", options: ["Functional", "Emotional", "Social", "Geographic"], correct: 4 },
-    { q: "How does purpose affect 'back office' teams?", options: ["No effect", "Helps prioritize tasks", "Only for sales", "Reduces workload"], correct: 2 },
-    { q: "What describes a buyer persona?", options: ["Individual prospect", "Semi-fictional representation", "Demographic list", "Sentiment analysis"], correct: 2 },
-    { q: "Who benefits most from personas?", options: ["Marketing only", "Sales only", "All customer-facing teams", "Leadership only"], correct: 3 },
-    { q: "Who should be involved in creating personas?", options: ["Marketing", "Services", "Leadership", "Anybody interacting with customers"], correct: 4 },
-    { q: "Role of 'back office' in personas?", options: ["Not involved", "Offer key insights", "Own process", "Accept finished"], correct: 2 },
-    { q: "True or false? One person should maintain personas.", options: ["True - Accountability", "True - Avoid inconsistency", "False - Too biased", "False - Unmanaged"], correct: 1 },
-    { q: "Relationship between purpose and personas?", options: ["Purpose defines personas", "Personas define purpose", "Same thing", "No relationship"], correct: 1 },
-    { q: "Marketing needs in a persona?", options: ["Lead quality", "Communication channels", "Buying power", "Feedback"], correct: 2 },
-    { q: "Sales needs in a persona?", options: ["Campaign ideas", "Qualification criteria", "Brand loyalty", "Social habits"], correct: 2 },
-    { q: "Customer service needs in a persona?", options: ["Sales targets", "Common roadblocks", "Lead source", "Ads preferences"], correct: 2 },
-    { q: "If person doesn't match persona, what to do?", options: ["Stop talking", "Force match", "Trust individual over persona", "Change persona"], correct: 3 },
-    { q: "What are Key Results?", options: ["Broad goals", "Quantitative benchmarks", "Names", "Deadlines"], correct: 2 },
-    { q: "Objectives vs Key Results?", options: ["Objectives short-lived", "KR long-lived", "Objectives 'what', KR 'how'", "No difference"], correct: 3 },
-    { q: "What is three horizon framework?", options: ["Past/Present", "Short/Med/Long growth", "Sales/Marketing/Service", "Tactics/Ops"], correct: 2 },
-    { q: "Horizon one symbolizes?", options: ["Innovation", "High-growth", "Core business/Profit", "Future"], correct: 3 },
-    { q: "Horizon three symbolizes?", options: ["Daily ops", "Scaling ideas", "Radical innovation", "Decreasing revenue"], correct: 3 },
-    { q: "True or false? Reallocate if one horizon underperforms.", options: ["True", "False"], correct: 2 },
-    { q: "Max number of top priorities?", options: ["1", "3", "5", "10"], correct: 2 },
-    { q: "Attract people by using _________ for content.", options: ["Database", "Leaders", "Your expertise", "Sales knowledge"], correct: 3 },
-    { q: "Engage stage - what to collect?", options: ["Goals", "First name", "Information", "Email"], correct: 3 },
-    { q: "Service team use of buyer's journey?", options: ["Cross-sell", "Up-sell", "Resell", "All of the above"], correct: 4 },
-    { q: "Relationship profits/purpose?", options: ["Purpose generates", "Profits enable purpose", "Profits distract", "Purpose drives"], correct: 2 },
-    { q: "Advice for 'Job to be Done'?", options: ["Guess", "Wait for 100", "Interview first few", "Ask competitors"], correct: 3 },
-    { q: "Why customer happiness matters?", options: ["Word-of-mouth", "Prevent negative", "Repeat business", "All of the above"], correct: 4 },
-    { q: "True or false? Don't think of sales as funnel with flywheel.", options: ["True", "False"], correct: 2 },
-    { q: "Flywheel improves handoff how?", options: ["Merge teams", "Visibility in steps", "Sales post-sale", "Granular reporting"], correct: 2 },
-    { q: "Principles of inbound?", options: ["Personalize/Empathize", "Energize/Synergize", "Analyze/Capitalize", "Categorize"], correct: 1 },
-    { q: "Attract stage focus?", options: ["Trusted advisor", "Helpful content", "Immediate value", "Exceeding expectations"], correct: 2 },
-    { q: "Percentage stopping comms due to irrelevant messages?", options: ["94%", "74%", "77%", "85%"], correct: 1 },
-    { q: "Percentage never returning after 1 bad experience?", options: ["61%", "46%", "51%", "34%"], correct: 3 },
-    { q: "To build trust, align with how they _________.", options: ["think/research/purchase", "work/live/play", "talk/act", "pay/save"], correct: 1 }
-];
-
-let userSession = {};
-let questions = [];
-let currentIndex = 0, score = 0, timer;
-let detailedResults = [];
-
-function checkAccess() {
-    const fn = document.getElementById('fname').value.trim();
-    const ln = document.getElementById('lname').value.trim();
-    const mail = document.getElementById('email').value.trim().toLowerCase();
-    const pw = document.getElementById('quiz-pw-input').value;
-
-    if(!fn || !ln || !mail || !pw) { alert("Tous les champs sont obligatoires."); return; }
-    if(!mail.endsWith(DOMAIN)) { alert("Email invalide. Utilisez votre adresse @edu.devinci.fr"); return; }
-    if(pw !== QUIZ_PW) { alert("Mot de passe du quiz incorrect."); return; }
-    if(localStorage.getItem(`done_${mail}`)) { alert("Vous avez déjà soumis ce test."); return; }
-
-    userSession = { fname: fn, lname: ln, email: mail };
-    startQuiz();
-}
-
-function startQuiz() {
-    questions = JSON.parse(JSON.stringify(questionsData));
-    questions.forEach(q => {
-        q.correctTxt = q.options[q.correct-1];
-        q.options.sort(() => Math.random() - 0.5);
-    });
-    questions.sort(() => Math.random() - 0.5);
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.remove('hidden');
-    showQuestion();
-}
-
-function showQuestion() {
-    if(currentIndex >= questions.length) return finishQuiz();
-    let timeLeft = 60;
-    document.getElementById('timer').innerText = timeLeft + "s";
-    clearInterval(timer);
-    timer = setInterval(() => {
-        timeLeft--;
-        document.getElementById('timer').innerText = timeLeft + "s";
-        if(timeLeft <= 0) handleAnswer("TIMEOUT");
-    }, 1000);
-    const q = questions[currentIndex];
-    document.getElementById('q-current').innerText = currentIndex + 1;
-    document.getElementById('question-text').innerText = q.q;
-    const container = document.getElementById('options-container');
-    container.innerHTML = '';
-    q.options.forEach(opt => {
-        const b = document.createElement('button');
-        b.className = 'option-btn';
-        b.innerText = opt;
-        b.onclick = () => handleAnswer(opt);
-        container.appendChild(b);
-    });
-}
-
-function handleAnswer(ans) {
-    const q = questions[currentIndex];
-    const isCorrect = (ans === q.correctTxt);
-    if(isCorrect) score++;
-    detailedResults.push({ q: q.q, studentAns: ans, correctAns: q.correctTxt, status: isCorrect ? '✅' : '❌' });
-    currentIndex++;
-    showQuestion();
-}
-
-function finishQuiz() {
-    clearInterval(timer);
-    const finalScore = Math.round((score/questions.length)*100);
-    const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    logs.push({ ...userSession, score: score, percent: finalScore, details: detailedResults, date: new Date().toLocaleString() });
-    localStorage.setItem('examLogs', JSON.stringify(logs));
-    localStorage.setItem(`done_${userSession.email}`, 'true');
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('result-screen').classList.remove('hidden');
-    document.getElementById('result-details').innerHTML = `<h3>Score: ${score} / 60 (${finalScore}%)</h3>`;
-}
-
-function showAdmin() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('admin-screen').classList.remove('hidden'); }
-function loginAdmin() {
-    if(document.getElementById('admin-pw').value === ADMIN_PW) {
-        document.getElementById('admin-auth').classList.add('hidden');
-        document.getElementById('admin-content').classList.remove('hidden');
-        renderLogs();
-    } else { alert("Accès refusé."); }
-}
-function renderLogs() {
-    const logs = JSON.parse(localStorage.getItem('examLogs') || '[]');
-    logs.sort((a, b) => a.lname.localeCompare(b.lname));
-    const body = document.getElementById('log-body');
-    body.innerHTML = '';
-    logs.forEach(log => {
-        const tr = document.createElement('tr');
-        tr.onclick = () => showDetails(log);
-        tr.innerHTML = `<td>${log.lname.toUpperCase()} ${log.fname}</td><td>${log.email}</td><td>${log.percent}%</td>`;
-        body.appendChild(tr);
-    });
-}
-function showDetails(log) {
-    document.getElementById('modal-user').innerText = log.fname + " " + log.lname;
-    document.getElementById('modal-details').innerHTML = log.details.map(d => `<p style="border-bottom:1px solid #eee; font-size:0.8rem"><strong>${d.q}</strong><br>Réponse: ${d.studentAns} ${d.status}</p>`).join('');
-    document.getElementById('detail-modal').classList.remove('hidden');
-}
-function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
 </script>
 </body>
 </html>
